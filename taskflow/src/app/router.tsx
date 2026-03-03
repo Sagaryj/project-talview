@@ -1,13 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
-import AppLayout from "@/layouts/AppLayout"
-
-const Dashboard = () => (
-  <div className="p-8 text-white">Dashboard</div>
-)
-
-const Projects = () => (
-  <div className="p-8 text-white">Projects</div>
-)
+import AppLayout from "../layouts/AppLayout"
+import Dashboard from "../pages/Dashboard"
+import Projects from "../pages/Projects"
 
 export const router = createBrowserRouter([
   {
