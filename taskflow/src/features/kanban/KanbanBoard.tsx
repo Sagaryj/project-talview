@@ -9,7 +9,7 @@ import type { TaskStatus } from "./types"
 export default function KanbanBoard() {
   const { tasks, moveTask, addTask, deleteTask,  
     reorderTask,  
-    draggingId, setDraggingId } 
+    draggingId, setDraggingId,updateTask } 
     = useKanban()
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -47,6 +47,7 @@ export default function KanbanBoard() {
           reorderTask={reorderTask}
           draggingId={draggingId}
           setDraggingId={setDraggingId} 
+          updateTask={updateTask} 
         />
 
         <KanbanColumn
@@ -62,6 +63,7 @@ export default function KanbanBoard() {
             draggingId={draggingId}
             setDraggingId={setDraggingId}
               reorderTask={reorderTask}
+              updateTask={updateTask}
 
         />
 
@@ -78,6 +80,7 @@ export default function KanbanBoard() {
             reorderTask={reorderTask}
             draggingId={draggingId}
             setDraggingId={setDraggingId}
+            updateTask={updateTask}
         />
       </div>
 

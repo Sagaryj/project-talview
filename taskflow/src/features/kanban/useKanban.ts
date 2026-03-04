@@ -58,7 +58,15 @@ const reorderTask = (dragId: string, hoverId: string) => {
     return updated
   })
 }
-
+const updateTask = (taskId: string, newTitle: string) => {
+  setTasks(prev =>
+    prev.map(task =>
+      task.id === taskId
+        ? { ...task, title: newTitle }
+        : task
+    )
+  )
+}
   return {
     tasks,
     moveTask,
@@ -67,6 +75,7 @@ const reorderTask = (dragId: string, hoverId: string) => {
     reorderTask,
     draggingId,
     setDraggingId,
+    updateTask
   }
 }
 

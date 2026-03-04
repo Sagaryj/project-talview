@@ -13,6 +13,7 @@ interface Props {
   reorderTask: (dragId: string, hoverId: string) => void
   draggingId: string | null
   setDraggingId: (id: string | null) => void
+  updateTask: (taskId: string, newTitle: string) => void
 }
 
 export default function KanbanColumn({
@@ -24,6 +25,7 @@ export default function KanbanColumn({
   onDeleteTask,
   reorderTask,
   setDraggingId,
+  updateTask,
 }: Props) {
   return (
     <div
@@ -72,6 +74,7 @@ export default function KanbanColumn({
               task={task}
               onDelete={onDeleteTask}
               setDraggingId={setDraggingId}
+              updateTask={updateTask}
             />
           </div>
         ))}

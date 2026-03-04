@@ -1,19 +1,22 @@
 import { motion } from "framer-motion"
 import type { Task, Priority } from "./types"
-
+import {useState} from "react"
 interface Props {
   task: Task
   onDelete: (taskId: string) => void
   setDraggingId: (id: string | null) => void
+  updateTask: (taskId: string, newTitle: string) => void
 }
 
 
-export default function KanbanCard({ task, onDelete, setDraggingId }: Props) {
+export default function KanbanCard({ task, onDelete, setDraggingId, updateTask }: Props) {
 const priorityColor: Record<Priority, string> = {
   low: "bg-green-500",
   medium: "bg-yellow-500",
   high: "bg-red-500"
 }
+const [editing, setEditing] = useState(false)
+const [value, setValue] = useState(task.title)
   return (
     <motion.div layout>
   <div
@@ -37,9 +40,34 @@ const priorityColor: Record<Priority, string> = {
   </span>
 </div>
         <div className="flex justify-between items-start">
-          <p className="text-sm font-medium">
-            {task.title}
-          </p>
+{editing ? (
+  <input
+    autoFocus
+    value={value}
+    onChange={(e) => setValue(e.target.value)}
+    onBlur={() => {
+      updateTask(task.id, value)
+      setEditing(false)
+    }}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        updateTask(task.id, value)
+        setEditing(false)
+      }
+    }}
+    className="
+      w-full text-sm bg-transparent
+      outline-none border-b border-neutral-400
+    "
+  />
+) : (
+  <p
+    onDoubleClick={() => setEditing(true)}
+    className="text-sm font-medium cursor-text"
+  >
+    {task.title}
+  </p>
+)}
 
           <button
             onClick={() => onDelete(task.id)}
