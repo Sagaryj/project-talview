@@ -7,7 +7,10 @@ import type { TaskStatus } from "./types"
 
 
 export default function KanbanBoard() {
-  const { tasks, moveTask, addTask, deleteTask } = useKanban()
+  const { tasks, moveTask, addTask, deleteTask,  
+    reorderTask,  
+    draggingId, setDraggingId } 
+    = useKanban()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] =
@@ -41,6 +44,9 @@ export default function KanbanBoard() {
             setModalOpen(true)
           }}
           onDeleteTask={deleteTask}
+          reorderTask={reorderTask}
+          draggingId={draggingId}
+          setDraggingId={setDraggingId} 
         />
 
         <KanbanColumn
@@ -53,6 +59,10 @@ export default function KanbanBoard() {
                 setModalOpen(true)
             }}
             onDeleteTask={deleteTask}
+            draggingId={draggingId}
+            setDraggingId={setDraggingId}
+              reorderTask={reorderTask}
+
         />
 
         <KanbanColumn
@@ -65,6 +75,9 @@ export default function KanbanBoard() {
             setModalOpen(true)
           }}
             onDeleteTask={deleteTask}
+            reorderTask={reorderTask}
+            draggingId={draggingId}
+            setDraggingId={setDraggingId}
         />
       </div>
 
