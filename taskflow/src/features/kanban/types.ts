@@ -6,4 +6,5 @@ export interface Task {
   description?: string
   status: TaskStatus
   priority: Priority 
+  dueDate?: string
 }

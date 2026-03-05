@@ -3,15 +3,16 @@ import { useState } from "react"
 import { useKanban } from "./useKanban"
 import KanbanColumn from "./KanbanColumn"
 import TaskModal from "./TaskModal"
-import type { TaskStatus } from "./types"
+import type { Task, TaskStatus } from "./types"
+import TaskDetailsModal from "./TaskDetailsModal"
 
 
 export default function KanbanBoard() {
   const { tasks, moveTask, addTask, deleteTask,  
     reorderTask,  
-    draggingId, setDraggingId,updateTask } 
+    draggingId, setDraggingId,updateTask,updatePriority, updateDueDate } 
     = useKanban()
-
+  const[selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] =
     useState<TaskStatus>("todo")
@@ -48,6 +49,8 @@ export default function KanbanBoard() {
           draggingId={draggingId}
           setDraggingId={setDraggingId} 
           updateTask={updateTask} 
+          setSelectedTask={setSelectedTask}
+          
         />
 
         <KanbanColumn
@@ -64,6 +67,9 @@ export default function KanbanBoard() {
             setDraggingId={setDraggingId}
               reorderTask={reorderTask}
               updateTask={updateTask}
+              setSelectedTask={setSelectedTask}
+              
+
 
         />
 
@@ -81,11 +87,23 @@ export default function KanbanBoard() {
             draggingId={draggingId}
             setDraggingId={setDraggingId}
             updateTask={updateTask}
+            setSelectedTask={setSelectedTask}
+            
         />
       </div>
+      {selectedTask && (
+       <TaskDetailsModal
+         task={selectedTask}
+          updateTask={updateTask}
+          onClose={() => setSelectedTask(null)}
+          updatePriority={updatePriority}
+          updateDueDate={updateDueDate} 
+  />
+)}
 
       {modalOpen && (
         <TaskModal
+
           status={selectedStatus}
           onClose={() => setModalOpen(false)}
           onCreate={addTask}

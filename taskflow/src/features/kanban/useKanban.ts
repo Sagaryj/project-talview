@@ -67,6 +67,24 @@ const updateTask = (taskId: string, newTitle: string) => {
     )
   )
 }
+const updateDueDate = (taskId: string, dueDate: string) => {
+  setTasks(prev =>
+    prev.map(task =>
+      task.id === taskId
+        ? { ...task, dueDate }
+        : task
+    )
+  )
+}
+ const updatePriority = (taskId: string, priority: Priority) => {
+  setTasks(prev =>
+    prev.map(task =>
+      task.id === taskId
+        ? { ...task, priority }
+        : task
+    )
+  )
+}
   return {
     tasks,
     moveTask,
@@ -75,7 +93,9 @@ const updateTask = (taskId: string, newTitle: string) => {
     reorderTask,
     draggingId,
     setDraggingId,
-    updateTask
+    updateTask,
+    updateDueDate,
+    updatePriority,
   }
 }
 

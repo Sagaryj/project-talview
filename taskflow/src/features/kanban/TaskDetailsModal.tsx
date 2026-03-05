@@ -1,21 +1,30 @@
 import { useState } from "react"
-import type { Priority, TaskStatus } from "./types"
+import type { Task, Priority } from "./types"
 
 interface Props {
-  status: TaskStatus
+  task: Task
+  updateTask: (taskId: string, newTitle: string) => void
+  updatePriority: (taskId: string, priority: Priority) => void
   onClose: () => void
-  onCreate: (title: string, status: TaskStatus, priority: Priority) => void
+  updateDueDate: (taskId: string, dueDate: string) => void
 }
 
-export default function TaskModal({ status, onClose, onCreate }: Props) {
+export default function TaskDetailsModal({
+  task,
+  updateTask,
+  updatePriority,
+  updateDueDate,
+  onClose
+}: Props) {
+  const [dueDate, setDueDate] = useState(task.dueDate ?? "")
+  const [title, setTitle] = useState(task.title)
+  const [priority, setPriority] = useState<Priority>(task.priority)
 
-  const [title, setTitle] = useState("")
-  const [priority, setPriority] = useState<Priority>("medium")
-
-  const handleCreate = () => {
-    if (!title.trim()) return
-    onCreate(title, status, priority)
+  const handleSave = () => {
+    updateTask(task.id, title)
+    updatePriority(task.id, priority)
     onClose()
+    updateDueDate(task.id, dueDate)
   }
 
   return (
@@ -27,9 +36,9 @@ export default function TaskModal({ status, onClose, onCreate }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="bg-white dark:bg-neutral-900 rounded-xl p-6 w-[420px]"
       >
+        <h2 className="text-lg font-semibold mb-4">Task Details</h2>
 
-        <h2 className="text-lg font-semibold mb-4">Create Task</h2>
-
+        {/* Title */}
         <label className="text-sm text-neutral-500">Title</label>
         <input
           value={title}
@@ -37,6 +46,7 @@ export default function TaskModal({ status, onClose, onCreate }: Props) {
           className="w-full border rounded-lg p-2 mt-1 mb-4"
         />
 
+        {/* Priority */}
         <label className="text-sm text-neutral-500">Priority</label>
         <select
           value={priority}
@@ -47,7 +57,15 @@ export default function TaskModal({ status, onClose, onCreate }: Props) {
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
+        <label className="text-sm text-neutral-500">Due Date</label>
 
+<input
+  type="date"
+  value={dueDate}
+  onChange={(e) => setDueDate(e.target.value)}
+  className="w-full border rounded-lg p-2 mt-1 mb-4"
+/>
+        {/* Buttons */}
         <div className="flex justify-end gap-2 mt-6">
           <button
             onClick={onClose}
@@ -57,13 +75,12 @@ export default function TaskModal({ status, onClose, onCreate }: Props) {
           </button>
 
           <button
-            onClick={handleCreate}
+            onClick={handleSave}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
           >
-            Create
+            Save
           </button>
         </div>
-
       </div>
     </div>
   )
