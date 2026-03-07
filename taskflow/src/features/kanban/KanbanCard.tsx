@@ -69,7 +69,22 @@ export default function KanbanCard({
             {task.priority}
           </span>
         </div>
-
+        {task.tags && task.tags.length > 0 && (
+  <div className="flex flex-wrap gap-1 mb-2">
+    {task.tags.map(tag => (
+      <span
+        key={tag}
+        className="
+          text-xs px-2 py-1 rounded-md
+          bg-neutral-200 dark:bg-neutral-700
+          text-neutral-700 dark:text-neutral-200
+        "
+      >
+        #{tag}
+      </span>
+    ))}
+  </div>
+)}
         {/* Title / Edit Input */}
         <div className="flex justify-between items-start gap-2">
 

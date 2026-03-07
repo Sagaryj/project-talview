@@ -7,6 +7,7 @@ interface Props {
   updatePriority: (taskId: string, priority: Priority) => void
   onClose: () => void
   updateDueDate: (taskId: string, dueDate: string) => void
+  updateTags: (taskId: string, tags: string[]) => void
 }
 
 export default function TaskDetailsModal({
@@ -14,18 +15,30 @@ export default function TaskDetailsModal({
   updateTask,
   updatePriority,
   updateDueDate,
-  onClose
+  onClose,
+  updateTags
 }: Props) {
   const [dueDate, setDueDate] = useState(task.dueDate ?? "")
   const [title, setTitle] = useState(task.title)
   const [priority, setPriority] = useState<Priority>(task.priority)
+  const [tags, setTags] = useState(task.tags?.join(", ") || "")
+const handleSave = () => {
 
-  const handleSave = () => {
-    updateTask(task.id, title)
-    updatePriority(task.id, priority)
-    onClose()
-    updateDueDate(task.id, dueDate)
-  }
+  updateTask(task.id, title)
+
+  updatePriority(task.id, priority)
+
+  updateDueDate(task.id, dueDate)
+
+  const tagsArray = tags
+    .split(",")
+    .map(t => t.trim())
+    .filter(Boolean)
+
+  updateTags(task.id, tagsArray)
+
+  onClose()
+}
 
   return (
     <div
@@ -57,8 +70,16 @@ export default function TaskDetailsModal({
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
-        <label className="text-sm text-neutral-500">Due Date</label>
+        {/* Due Date */}
+        <label className="text-sm text-neutral-500">Tags</label>
 
+<input
+  value={tags}
+  onChange={(e) => setTags(e.target.value)}
+  placeholder="frontend, bug, api"
+  className="w-full border rounded-lg p-2 mt-1 mb-4"
+/>
+<label className="text-sm text-neutral-500">Due Date</label>
 <input
   type="date"
   value={dueDate}

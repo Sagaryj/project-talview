@@ -7,4 +7,5 @@ export interface Task {
   status: TaskStatus
   priority: Priority 
   dueDate?: string
+  tags?: string[]
 }
