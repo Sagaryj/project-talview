@@ -5,7 +5,8 @@ import {
   FolderKanban,
   Calendar,
   BarChart3,
-  Settings
+  Settings,
+  User
 } from "lucide-react"
 
 interface SidebarProps {
@@ -98,6 +99,12 @@ export default function Sidebar({
           icon={<Settings size={18} />}
           collapsed={collapsed}
         />
+        <NavItem
+  to="/profile"
+  label="Profile"
+  icon={<User size={18}/>}
+  collapsed={collapsed}
+/>
 
       </nav>
 
@@ -141,3 +148,5 @@ function NavItem({
     </NavLink>
   )
 }
+
+

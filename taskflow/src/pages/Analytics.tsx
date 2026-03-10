@@ -27,17 +27,8 @@ export default function Analytics() {
 
   return (
     <div className="space-y-8">
-        <Card title="Created vs Completed">
-  <CreatedVsCompletedChart tasks={tasks}/>
-</Card>
 
-<Card title="Tag Distribution">
-  <TagChart tasks={tasks}/>
-</Card>
 
-<Card title="Task Aging">
-  <AgingChart tasks={tasks}/>
-</Card>
       <div>
         <h1 className="text-2xl font-bold dark:text-white">
           Analytics
@@ -87,7 +78,9 @@ export default function Analytics() {
       <Card title="Task Aging">
         <AgingChart tasks={tasks}/>
       </Card>
-
+        <Card title="Created vs Completed">
+  <CreatedVsCompletedChart tasks={tasks}/>
+</Card>
     </div>
   )
 }

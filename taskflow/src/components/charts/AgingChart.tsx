@@ -42,8 +42,15 @@ export default function AgingChart({ tasks }: Props) {
       value
     }))
 
-    const width = 400
-    const height = 300
+    const margin = { top: 20, right: 20, bottom: 40, left: 40 }
+    const width = 420 - margin.left - margin.right
+    const height = 300 - margin.top - margin.bottom
+
+    const chart = svg
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
 
     const x = d3.scaleBand()
       .domain(data.map(d=>d.label))
@@ -51,25 +58,31 @@ export default function AgingChart({ tasks }: Props) {
       .padding(0.3)
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data,d=>d.value) || 1])
+      .domain([0,d3.max(data,d=>d.value) || 1])
       .range([height,0])
 
-    const chart = svg
-      .attr("width",width)
-      .attr("height",height)
-      .append("g")
+    chart.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x))
+
+    chart.append("g")
+      .call(d3.axisLeft(y))
 
     chart.selectAll("rect")
       .data(data)
       .enter()
       .append("rect")
       .attr("x",d=>x(d.label)!)
-      .attr("y",d=>y(d.value))
       .attr("width",x.bandwidth())
-      .attr("height",d=>height-y(d.value))
+      .attr("y",height)
+      .attr("height",0)
       .attr("fill","#ef4444")
+      .transition()
+      .duration(800)
+      .attr("y",d=>y(d.value))
+      .attr("height",d=>height-y(d.value))
 
   },[tasks])
 
-  return <svg ref={ref} className="w-full h-[300px]" />
+  return <svg ref={ref} className="w-full" />
 }

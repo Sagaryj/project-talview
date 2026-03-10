@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import type { Task, TaskStatus, Priority } from "./types"
+import type { Activity } from "../../types/Activity"
 
 const initialTasks: Task[] = [
   { id: "1", title: "Design dashboard UI", status: "todo", priority: "high" },
@@ -9,23 +10,60 @@ const initialTasks: Task[] = [
 
 export function useKanban() {
 
+  /* ---------------- TASK STATE ---------------- */
+
   const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem("kanban-tasks")
     return saved ? JSON.parse(saved) : initialTasks
   })
 
+  /* ---------------- ACTIVITY STATE ---------------- */
+
+  const [activity, setActivity] = useState<Activity[]>(() => {
+    const saved = localStorage.getItem("kanban-activity")
+    return saved ? JSON.parse(saved) : []
+  })
+
+  /* ---------------- PERSISTENCE ---------------- */
+
   useEffect(() => {
     localStorage.setItem("kanban-tasks", JSON.stringify(tasks))
   }, [tasks])
 
+  useEffect(() => {
+    localStorage.setItem("kanban-activity", JSON.stringify(activity))
+  }, [activity])
+
+  /* ---------------- DRAG STATE ---------------- */
+
   const [draggingId, setDraggingId] = useState<string | null>(null)
 
+  /* ---------------- ACTIVITY LOGGER ---------------- */
+
+  const logActivity = (message: string) => {
+
+    const newActivity: Activity = {
+      id: crypto.randomUUID(),
+      message,
+      timestamp: Date.now()
+    }
+
+    setActivity(prev => [newActivity, ...prev])
+  }
+
+  /* ---------------- TASK ACTIONS ---------------- */
+
   const moveTask = (taskId: string, newStatus: TaskStatus) => {
+
     setTasks(prev =>
       prev.map(task =>
-        task.id === taskId ? { ...task, status: newStatus } : task
+        task.id === taskId
+          ? { ...task, status: newStatus }
+          : task
       )
     )
+
+    logActivity(`Task moved to ${newStatus}`)
   }
 
   const addTask = (
@@ -35,6 +73,7 @@ export function useKanban() {
     tags: string[],
     dueDate: string
   ) => {
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title,
@@ -45,14 +84,25 @@ export function useKanban() {
     }
 
     setTasks(prev => [...prev, newTask])
+
+    logActivity(`Task "${title}" created`)
   }
 
   const deleteTask = (taskId: string) => {
+
+    const task = tasks.find(t => t.id === taskId)
+
     setTasks(prev => prev.filter(task => task.id !== taskId))
+
+    if (task) {
+      logActivity(`Task "${task.title}" deleted`)
+    }
   }
 
   const reorderTask = (dragId: string, hoverId: string) => {
+
     setTasks(prev => {
+
       const dragTask = prev.find(t => t.id === dragId)
       const hoverTask = prev.find(t => t.id === hoverId)
 
@@ -69,9 +119,12 @@ export function useKanban() {
 
       return updated
     })
+
+    logActivity("Tasks reordered")
   }
 
   const updateTask = (taskId: string, newTitle: string) => {
+
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId
@@ -79,9 +132,12 @@ export function useKanban() {
           : task
       )
     )
+
+    logActivity(`Task title updated`)
   }
 
   const updateDueDate = (taskId: string, dueDate: string) => {
+
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId
@@ -89,9 +145,12 @@ export function useKanban() {
           : task
       )
     )
+
+    logActivity(`Due date updated`)
   }
 
   const updatePriority = (taskId: string, priority: Priority) => {
+
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId
@@ -99,8 +158,12 @@ export function useKanban() {
           : task
       )
     )
+
+    logActivity(`Priority changed to ${priority}`)
   }
+
   const updateTags = (taskId: string, tags: string[]) => {
+
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId
@@ -108,10 +171,15 @@ export function useKanban() {
           : task
       )
     )
+
+    logActivity(`Tags updated`)
   }
+
+  /* ---------------- RETURN ---------------- */
 
   return {
     tasks,
+    activity,
     moveTask,
     addTask,
     deleteTask,

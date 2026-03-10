@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom"
-
+import Profile from "../pages/Profile"
 import AppLayout from "../layouts/AppLayout"
 
 import Dashboard from "../pages/Dashboard"
@@ -16,7 +16,8 @@ export const router = createBrowserRouter([
       { path: "/projects", element: <Projects /> },
       { path: "/calendar", element: <Calendar /> },
       { path: "/analytics", element: <Analytics /> },
-      { path: "/settings", element: <Settings /> }
+      { path: "/settings", element: <Settings /> },
+      { path: "/profile", element: <Profile /> }
     ]
   }
 ])
