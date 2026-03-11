@@ -9,7 +9,7 @@ import TaskDetailsModal from "./TaskDetailsModal"
 
 export default function KanbanBoard() {
   const { tasks, moveTask, addTask, deleteTask,  
-    reorderTask,  
+    reorderTask,  updateDescription,
     draggingId, setDraggingId,updateTask,updatePriority, updateDueDate,updateTags } 
     = useKanban()
   const[selectedTask, setSelectedTask] = useState<Task | null>(null)
@@ -149,6 +149,7 @@ const filteredTasks = tasks.filter((task) => {
   updateDueDate={updateDueDate}
   updateTags={updateTags}
   onClose={() => setSelectedTask(null)}
+  updateDescription={updateDescription}
 />
     )}
 

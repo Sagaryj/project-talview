@@ -4,23 +4,28 @@ import PriorityChart from "../components/charts/PriorityChart"
 import WeeklyChart from "../components/charts/WeeklyChart"
 import TagChart from "../components/charts/TagChart"
 import AgingChart from "../components/charts/AgingChart"
-import CreatedVsCompletedChart from "../components/charts/CreatedVsCompletedChart"
-import type { ReactNode } from "react"
 
+import CompletionRing from "../components/charts/CompletionRing"
+import { useIntl } from "react-intl"
+import type { ReactNode } from "react"
 
 interface CardProps {
   title: string
   children: ReactNode
 }
+
 interface StatProps {
   title: string
   value: number | string
 }
+
 export default function Analytics() {
 
   const { tasks } = useKanban()
+  const intl = useIntl()
 
   const completed = tasks.filter(t => t.status === "done").length
+
   const productivity = tasks.length
     ? Math.round((completed / tasks.length) * 100)
     : 0
@@ -28,59 +33,75 @@ export default function Analytics() {
   return (
     <div className="space-y-8">
 
-
+      {/* HEADER */}
       <div>
+
         <h1 className="text-2xl font-bold dark:text-white">
-          Analytics
+          {intl.formatMessage({ id: "Analytics" })}
         </h1>
 
         <p className="text-neutral-500 text-sm">
-          Advanced productivity insights
+          {intl.formatMessage({ id: "Advanced Insights" })}
         </p>
+
       </div>
 
       {/* KPI */}
       <div className="grid grid-cols-3 gap-6">
 
-        <Stat title="Total Tasks" value={tasks.length}/>
-        <Stat title="Completed Tasks" value={completed}/>
-        <Stat title="Productivity Score" value={`${productivity}%`}/>
+        <Stat
+          title={intl.formatMessage({ id: "Total Tasks" })}
+          value={tasks.length}
+        />
+
+        <Stat
+          title={intl.formatMessage({ id: "Completed Tasks" })}
+          value={completed}
+        />
+
+        <Stat
+          title={intl.formatMessage({ id: "Productivity Score" })}
+          value={`${productivity}%`}
+        />
 
       </div>
 
-      {/* Row 1 */}
+      {/* ROW 1 */}
       <div className="grid md:grid-cols-2 gap-6">
 
-        <Card title="Task Status Breakdown">
+        <Card title={intl.formatMessage({ id: "Task Status Breakdown" })}>
           <StatusChart tasks={tasks}/>
         </Card>
 
-        <Card title="Priority Distribution">
+        <Card title={intl.formatMessage({ id: "Priority Distribution" })}>
           <PriorityChart tasks={tasks}/>
         </Card>
 
       </div>
 
-      {/* Row 2 */}
+      {/* ROW 2 */}
       <div className="grid md:grid-cols-2 gap-6">
 
-        <Card title="Tasks Completed Per Week">
+        <Card title={intl.formatMessage({ id: "Tasks Per Week" })}>
           <WeeklyChart tasks={tasks}/>
         </Card>
 
-        <Card title="Tag Distribution">
+        <Card title={intl.formatMessage({ id: "Tag Distribution" })}>
           <TagChart tasks={tasks}/>
         </Card>
 
       </div>
 
-      {/* Row 3 */}
-      <Card title="Task Aging">
+      {/* ROW 3 */}
+
+      <Card title={intl.formatMessage({ id: "Task Aging" })}>
         <AgingChart tasks={tasks}/>
       </Card>
-        <Card title="Created vs Completed">
-  <CreatedVsCompletedChart tasks={tasks}/>
-</Card>
+
+      <Card title={intl.formatMessage({ id: "Created Vs Completed" })}>
+        <CompletionRing tasks={tasks}/>
+      </Card>
+
     </div>
   )
 }

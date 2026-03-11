@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import type {ReactNode} from "react"
+import type { ReactNode } from "react"
+
 type Theme = "system" | "light" | "dark"
 type Priority = "low" | "medium" | "high"
 
@@ -25,13 +26,23 @@ const PROFILE_KEY = "taskflow-profile"
 
 export default function Settings() {
 
+  const [language,setLanguage] = useState(
+    localStorage.getItem("app-language") || "en"
+  )
+
+  const handleChange = (lang:string)=>{
+    localStorage.setItem("app-language", lang)
+    location.reload()
+  }
+
   const [profile, setProfile] = useState<UserProfile>(() => {
     try {
-  const saved = localStorage.getItem(PROFILE_KEY)
-  if (saved) return JSON.parse(saved)
-} catch (error) {
-  console.error("Profile parse error", error)
-}
+      const saved = localStorage.getItem(PROFILE_KEY)
+      if (saved) return JSON.parse(saved)
+    } catch (error) {
+      console.error("Profile parse error", error)
+    }
+
     return {
       name: "User",
       username: "user123",
@@ -44,11 +55,12 @@ export default function Settings() {
 
   const [settings, setSettings] = useState<UserSettings>(() => {
     try {
-  const saved = localStorage.getItem(PROFILE_KEY)
-  if (saved) return JSON.parse(saved)
-} catch (error) {
-  console.error("Profile parse error", error)
-}
+      const saved = localStorage.getItem(SETTINGS_KEY)
+      if (saved) return JSON.parse(saved)
+    } catch (error) {
+      console.error("Settings parse error", error)
+    }
+
     return {
       theme: "system",
       compactLayout: false,
@@ -154,6 +166,31 @@ export default function Settings() {
         </p>
       </div>
 
+      {/* LANGUAGE */}
+
+      <Section title="Language">
+
+        <Select
+          label="Application Language"
+          value={language}
+          onChange={(v)=>{
+            setLanguage(v)
+            handleChange(v)
+          }}
+          options={[
+            {label:"English",value:"en"},
+            {label:"Spanish",value:"es"},
+            {label:"French",value:"fr"},
+            {label:"German",value:"de"},
+            {label:"Hindi",value:"hi"},
+            {label:"Japanese",value:"ja"}
+          ]}
+        />
+
+      </Section>
+
+      {/* PROFILE */}
+
       <Section title="Profile">
 
         <Input label="Full Name" value={profile.name} onChange={(v)=>updateProfile("name",v)} />
@@ -164,6 +201,8 @@ export default function Settings() {
         <Input label="Timezone" value={profile.timezone} onChange={(v)=>updateProfile("timezone",v)} />
 
       </Section>
+
+      {/* APPEARANCE */}
 
       <Section title="Appearance">
 
@@ -186,6 +225,8 @@ export default function Settings() {
 
       </Section>
 
+      {/* NOTIFICATIONS */}
+
       <Section title="Notifications">
 
         <Toggle
@@ -202,6 +243,8 @@ export default function Settings() {
 
       </Section>
 
+      {/* TASK DEFAULTS */}
+
       <Section title="Task Defaults">
 
         <Select
@@ -217,6 +260,8 @@ export default function Settings() {
 
       </Section>
 
+      {/* DATA MANAGEMENT */}
+
       <Section title="Data Management">
 
         <button
@@ -227,6 +272,8 @@ export default function Settings() {
         </button>
 
       </Section>
+
+      {/* DANGER ZONE */}
 
       <Section title="Danger Zone">
 

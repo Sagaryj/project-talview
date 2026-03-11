@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import type { Task, TaskStatus, Priority } from "./types"
 import type { Activity } from "../../types/Activity"
 
+
 const initialTasks: Task[] = [
   { id: "1", title: "Design dashboard UI", status: "todo", priority: "high" },
   { id: "2", title: "Setup routing system", status: "in-progress", priority: "medium" },
@@ -71,7 +72,8 @@ export function useKanban() {
     status: TaskStatus,
     priority: Priority,
     tags: string[],
-    dueDate: string
+    dueDate: string,
+    description?: string
   ) => {
 
     const newTask: Task = {
@@ -80,14 +82,23 @@ export function useKanban() {
       status,
       priority,
       tags,
-      dueDate
+      dueDate,
+      description
     }
 
     setTasks(prev => [...prev, newTask])
 
     logActivity(`Task "${title}" created`)
   }
-
+  const updateDescription = (taskId: string, description: string) => {
+  setTasks(prev =>
+    prev.map(task =>
+      task.id === taskId
+        ? { ...task, description }
+        : task
+    )
+  )
+}
   const deleteTask = (taskId: string) => {
 
     const task = tasks.find(t => t.id === taskId)
@@ -189,6 +200,7 @@ export function useKanban() {
     updateTask,
     updateDueDate,
     updatePriority,
-    updateTags
+    updateTags,
+    updateDescription
   }
 }

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom"
 import type { Dispatch, SetStateAction } from "react"
+import { useIntl } from "react-intl"
 import {
   LayoutDashboard,
   FolderKanban,
@@ -22,6 +23,9 @@ export default function Sidebar({
   setCollapsed,
   setMobileOpen,
 }: SidebarProps) {
+
+  const intl = useIntl()
+
   return (
     <aside
       className={`
@@ -67,44 +71,45 @@ export default function Sidebar({
 
         <NavItem
           to="/"
-          label="Dashboard"
+          label={intl.formatMessage({ id: "dashboard" })}
           icon={<LayoutDashboard size={18} />}
           collapsed={collapsed}
         />
 
         <NavItem
           to="/projects"
-          label="Projects"
+          label={intl.formatMessage({ id: "projects" })}
           icon={<FolderKanban size={18} />}
           collapsed={collapsed}
         />
 
         <NavItem
           to="/calendar"
-          label="Calendar"
+          label={intl.formatMessage({ id: "calendar" })}
           icon={<Calendar size={18} />}
           collapsed={collapsed}
         />
 
         <NavItem
           to="/analytics"
-          label="Analytics"
+          label={intl.formatMessage({ id: "analytics" })}
           icon={<BarChart3 size={18} />}
           collapsed={collapsed}
         />
 
         <NavItem
           to="/settings"
-          label="Settings"
+          label={intl.formatMessage({ id: "settings" })}
           icon={<Settings size={18} />}
           collapsed={collapsed}
         />
+
         <NavItem
-  to="/profile"
-  label="Profile"
-  icon={<User size={18}/>}
-  collapsed={collapsed}
-/>
+          to="/profile"
+          label={intl.formatMessage({ id: "profile" })}
+          icon={<User size={18} />}
+          collapsed={collapsed}
+        />
 
       </nav>
 
@@ -148,5 +153,3 @@ function NavItem({
     </NavLink>
   )
 }
-
-

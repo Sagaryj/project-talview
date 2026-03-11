@@ -8,6 +8,7 @@ interface Props {
   onClose: () => void
   updateDueDate: (taskId: string, dueDate: string) => void
   updateTags: (taskId: string, tags: string[]) => void
+  updateDescription: (taskId: string, description: string) => void
 }
 
 export default function TaskDetailsModal({
@@ -16,8 +17,10 @@ export default function TaskDetailsModal({
   updatePriority,
   updateDueDate,
   onClose,
-  updateTags
+  updateTags,
+  updateDescription
 }: Props) {
+  const [description, setDescription] = useState(task.description ?? "")
   const [dueDate, setDueDate] = useState(task.dueDate ?? "")
   const [title, setTitle] = useState(task.title)
   const [priority, setPriority] = useState<Priority>(task.priority)
@@ -36,6 +39,7 @@ const handleSave = () => {
     .filter(Boolean)
 
   updateTags(task.id, tagsArray)
+  updateDescription(task.id, description)
 
   onClose()
 }
@@ -86,6 +90,24 @@ const handleSave = () => {
   onChange={(e) => setDueDate(e.target.value)}
   className="w-full border rounded-lg p-2 mt-1 mb-4"
 />
+<label className="text-sm text-neutral-500">
+  Description
+</label>
+
+<textarea
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  placeholder="Add task description..."
+  className="
+    w-full
+    border
+    rounded-lg
+    p-2
+    mt-1
+    mb-4
+    min-h-[80px]
+  "
+/>
         {/* Buttons */}
         <div className="flex justify-end gap-2 mt-6">
           <button
@@ -98,6 +120,7 @@ const handleSave = () => {
           <button
             onClick={handleSave}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+            
           >
             Save
           </button>

@@ -10,7 +10,7 @@ export default function ActivityFeed({ activity }: Props) {
 
     <div className="space-y-3">
 
-      {activity.slice(0,10).map(item => (
+      {activity.slice(0,5).map(item => (
 
         <div
           key={item.id}

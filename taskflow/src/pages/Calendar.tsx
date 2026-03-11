@@ -5,23 +5,31 @@ import type { Task } from "../features/kanban/types"
 
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core"
 import type { DragEndEvent } from "@dnd-kit/core"
-import type { ReactNode } from "react"  
+
+import { useIntl } from "react-intl"
+import type { ReactNode } from "react"
+
 interface DroppableDayProps {
   day: number | null
   children: ReactNode
-} 
+}
+
 interface DraggableTaskProps {
   task: Task
   children: ReactNode
 }
+
 export default function Calendar() {
+
+  const intl = useIntl()
 
   const {
     tasks,
     updateTask,
     updatePriority,
     updateDueDate,
-    updateTags
+    updateTags,
+    updateDescription
   } = useKanban()
 
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
@@ -81,6 +89,16 @@ export default function Calendar() {
     updateDueDate(taskId, newDate)
   }
 
+  const days = [
+    intl.formatMessage({ id: "sun" }),
+    intl.formatMessage({ id: "mon" }),
+    intl.formatMessage({ id: "tue" }),
+    intl.formatMessage({ id: "wed" }),
+    intl.formatMessage({ id: "thu" }),
+    intl.formatMessage({ id: "fri" }),
+    intl.formatMessage({ id: "sat" })
+  ]
+
   return (
 
     <DndContext onDragEnd={handleDragEnd}>
@@ -91,7 +109,7 @@ export default function Calendar() {
         <div className="flex items-center justify-between">
 
           <h1 className="text-2xl font-bold dark:text-white">
-            Calendar
+            {intl.formatMessage({ id: "calendar" })}
           </h1>
 
           <div className="flex gap-2">
@@ -116,13 +134,18 @@ export default function Calendar() {
 
         {/* MONTH */}
         <div className="text-lg font-semibold dark:text-white">
-          {currentDate.toLocaleString("default",{ month:"long", year:"numeric" })}
+
+          {currentDate.toLocaleString(
+            localStorage.getItem("app-language") || "en",
+            { month: "long", year: "numeric" }
+          )}
+
         </div>
 
-        {/* CALENDAR GRID */}
+        {/* GRID */}
         <div className="grid grid-cols-7 gap-2 text-sm">
 
-          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => (
+          {days.map(d => (
             <div key={d} className="text-center text-neutral-500 font-medium">
               {d}
             </div>
@@ -205,6 +228,7 @@ export default function Calendar() {
             updatePriority={updatePriority}
             updateDueDate={updateDueDate}
             updateTags={updateTags}
+            updateDescription={updateDescription}
           />
         )}
 

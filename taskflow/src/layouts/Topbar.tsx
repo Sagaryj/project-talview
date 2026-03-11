@@ -2,7 +2,9 @@ import { Search, Sun, Moon, LogOut, KeyRound, HelpCircle } from "lucide-react"
 import { useTheme } from "../hooks/useTheme"
 import { useState, useRef, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import type {ReactNode} from "react"
+import { useIntl } from "react-intl"
+import type { ReactNode } from "react"
+
 interface TopbarProps {
   toggleDesktop: () => void
   toggleMobile: () => void
@@ -10,12 +12,12 @@ interface TopbarProps {
 }
 
 export default function Topbar({
-  toggleDesktop,
   toggleMobile,
   openCommand,
 }: TopbarProps) {
 
   const { theme, setTheme } = useTheme()
+  const intl = useIntl()
 
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
@@ -45,7 +47,7 @@ export default function Topbar({
       "
     >
 
-      {/* LEFT SIDE */}
+      {/* LEFT */}
       <div className="flex items-center gap-4">
 
         <button
@@ -55,23 +57,16 @@ export default function Topbar({
           ☰
         </button>
 
-        <button
-          onClick={toggleDesktop}
-          className="hidden md:block text-neutral-500 hover:text-black dark:hover:text-white transition"
-        >
-          ☰
-        </button>
-
         <span className="text-sm text-neutral-600 dark:text-neutral-300">
-          Welcome back 👋
+          {intl.formatMessage({ id: "Welcome Back" })} 👋
         </span>
 
       </div>
 
-      {/* RIGHT SIDE */}
+      {/* RIGHT */}
       <div className="flex items-center gap-4">
 
-        {/* Search Button */}
+        {/* SEARCH */}
         <button
           onClick={openCommand}
           className="
@@ -84,27 +79,28 @@ export default function Topbar({
           "
         >
           <Search size={16} />
-          <span className="hidden sm:inline text-sm">Search</span>
+
+          <span className="hidden sm:inline text-sm">
+            {intl.formatMessage({ id: "search" })}
+          </span>
+
           <span className="hidden sm:inline text-xs opacity-50">
             ⌘K
           </span>
+
         </button>
 
-        {/* Theme Toggle */}
+        {/* THEME */}
         <button
           onClick={() =>
             setTheme(theme === "dark" ? "light" : "dark")
           }
           className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
         >
-          {theme === "dark" ? (
-            <Sun size={18} />
-          ) : (
-            <Moon size={18} />
-          )}
+          {theme === "dark" ? <Sun size={18}/> : <Moon size={18}/>}
         </button>
 
-        {/* Avatar + Dropdown */}
+        {/* AVATAR */}
         <div className="relative" ref={menuRef}>
 
           <button
@@ -137,18 +133,18 @@ export default function Topbar({
                 "
               >
 
-                <MenuItem icon={<KeyRound size={16} />}>
-                  Change Password
+                <MenuItem icon={<KeyRound size={16}/>}>
+                  {intl.formatMessage({ id: "changePassword" })}
                 </MenuItem>
 
-                <MenuItem icon={<HelpCircle size={16} />}>
-                  FAQs
+                <MenuItem icon={<HelpCircle size={16}/>}>
+                  {intl.formatMessage({ id: "faq" })}
                 </MenuItem>
 
-                <div className="border-t border-neutral-200 dark:border-neutral-800 my-2" />
+                <div className="border-t border-neutral-200 dark:border-neutral-800 my-2"/>
 
-                <MenuItem icon={<LogOut size={16} />}>
-                  Logout
+                <MenuItem icon={<LogOut size={16}/>}>
+                  {intl.formatMessage({ id: "logout" })}
                 </MenuItem>
 
               </motion.div>
