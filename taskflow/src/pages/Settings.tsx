@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import type { ReactNode } from "react"
+import { Plus, ArrowLeft, ArrowRight, Lock, Trash2, RotateCcw } from "lucide-react"
+import { useWorkflow } from "../features/kanban/useWorkflow"
+import type { WorkflowCategory } from "../types/workflow"
 
 type Theme = "system" | "light" | "dark"
 type Priority = "low" | "medium" | "high"
@@ -25,10 +28,16 @@ const SETTINGS_KEY = "taskflow-settings"
 const PROFILE_KEY = "taskflow-profile"
 
 export default function Settings() {
+  const { statuses, addStatus, removeStatus, moveStatus, resetStatuses } = useWorkflow()
+  const [workflowLabel, setWorkflowLabel] = useState("")
+  const [workflowColor, setWorkflowColor] = useState("#0f766e")
+  const [workflowCategory, setWorkflowCategory] = useState<WorkflowCategory>("active")
 
   const [language,setLanguage] = useState(
     localStorage.getItem("app-language") || "en"
   )
+
+  const canResetWorkflow = statuses.some((status) => !status.system)
 
   const handleChange = (lang:string)=>{
     localStorage.setItem("app-language", lang)
@@ -152,6 +161,16 @@ export default function Settings() {
 
   }
 
+  function handleAddWorkflowStatus() {
+    const trimmedLabel = workflowLabel.trim()
+    if (!trimmedLabel) return
+
+    addStatus(trimmedLabel, workflowColor, workflowCategory)
+    setWorkflowLabel("")
+    setWorkflowColor("#0f766e")
+    setWorkflowCategory("active")
+  }
+
   return (
 
     <div className="max-w-4xl space-y-8">
@@ -260,6 +279,124 @@ export default function Settings() {
 
       </Section>
 
+      <Section
+        title="Workflow Stages"
+        description="Manage the stages used across boards, analytics, dashboard summaries, and task editing."
+      >
+        <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 dark:border-neutral-800 dark:bg-neutral-950/70">
+          <div className="grid gap-4 md:grid-cols-[1.2fr_140px_160px_auto]">
+            <Input
+              label="Stage Name"
+              value={workflowLabel}
+              onChange={setWorkflowLabel}
+              placeholder="Blocked, Review, QA..."
+            />
+
+            <ColorInput
+              label="Accent"
+              value={workflowColor}
+              onChange={setWorkflowColor}
+            />
+
+            <Select
+              label="Category"
+              value={workflowCategory}
+              onChange={(value) => setWorkflowCategory(value as WorkflowCategory)}
+              options={[
+                { label: "Pending", value: "pending" },
+                { label: "Active", value: "active" },
+                { label: "Completed", value: "completed" }
+              ]}
+            />
+
+            <div className="flex items-end">
+              <button
+                onClick={handleAddWorkflowStatus}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+              >
+                <Plus size={16} />
+                Add Stage
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {statuses.map((status, index) => (
+            <div
+              key={status.id}
+              className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-950/60 lg:flex-row lg:items-center lg:justify-between"
+            >
+              <div className="flex items-center gap-4">
+                <span
+                  className="h-11 w-11 rounded-2xl shadow-inner"
+                  style={{ backgroundColor: status.color }}
+                />
+
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
+                      {status.label}
+                    </h3>
+                    <StageBadge category={status.category} />
+                    {status.system && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-neutral-200 px-2.5 py-1 text-[11px] font-medium text-neutral-500 dark:border-neutral-700 dark:text-neutral-300">
+                        <Lock size={12} />
+                        Core
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="mt-1 text-xs text-neutral-500">
+                    ID: {status.id}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => moveStatus(status.id, "left")}
+                  disabled={index === 0}
+                  className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
+                >
+                  <ArrowLeft size={15} />
+                  Move Left
+                </button>
+
+                <button
+                  onClick={() => moveStatus(status.id, "right")}
+                  disabled={index === statuses.length - 1}
+                  className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
+                >
+                  <ArrowRight size={15} />
+                  Move Right
+                </button>
+
+                <button
+                  onClick={() => removeStatus(status.id)}
+                  disabled={status.system || statuses.length === 1}
+                  className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-red-900/70 dark:text-red-300 dark:hover:bg-red-950/40"
+                >
+                  <Trash2 size={15} />
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            onClick={resetStatuses}
+            disabled={!canResetWorkflow}
+            className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
+          >
+            <RotateCcw size={15} />
+            Reset Workflow
+          </button>
+        </div>
+      </Section>
+
       {/* DATA MANAGEMENT */}
 
       <Section title="Data Management">
@@ -306,16 +443,29 @@ export default function Settings() {
 
 function Section({
   title,
+  description,
   children
-}:{title:string,children:ReactNode}){
+}:{
+  title:string
+  description?: string
+  children:ReactNode
+}){
 
   return(
 
     <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 space-y-4">
 
-      <h2 className="text-sm font-semibold text-neutral-600 dark:text-white">
-        {title}
-      </h2>
+      <div className="space-y-1">
+        <h2 className="text-sm font-semibold text-neutral-600 dark:text-white">
+          {title}
+        </h2>
+
+        {description && (
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            {description}
+          </p>
+        )}
+      </div>
 
       {children}
 
@@ -327,8 +477,14 @@ function Section({
 function Input({
   label,
   value,
-  onChange
-}:{label:string,value:string,onChange:(v:string)=>void}){
+  onChange,
+  placeholder
+}:{
+  label:string
+  value:string
+  onChange:(v:string)=>void
+  placeholder?: string
+}){
 
   return(
 
@@ -339,8 +495,43 @@ function Input({
       <input
         value={value}
         onChange={(e)=>onChange(e.target.value)}
+        placeholder={placeholder}
         className="w-full border border-neutral-300 dark:border-neutral-700 rounded-lg px-3 py-2 text-sm dark:bg-neutral-800"
       />
+
+    </div>
+
+  )
+}
+
+function ColorInput({
+  label,
+  value,
+  onChange
+}:{
+  label:string
+  value:string
+  onChange:(v:string)=>void
+}){
+
+  return(
+
+    <div className="space-y-1">
+
+      <p className="text-sm text-neutral-500">{label}</p>
+
+      <label className="flex h-[42px] items-center gap-3 rounded-lg border border-neutral-300 bg-white px-3 dark:border-neutral-700 dark:bg-neutral-800">
+        <input
+          type="color"
+          value={value}
+          onChange={(e)=>onChange(e.target.value)}
+          className="h-7 w-7 rounded border-0 bg-transparent p-0"
+        />
+
+        <span className="text-sm text-neutral-600 dark:text-neutral-200">
+          {value.toUpperCase()}
+        </span>
+      </label>
 
     </div>
 
@@ -407,5 +598,19 @@ function Toggle({
 
     </div>
 
+  )
+}
+
+function StageBadge({ category }: { category: WorkflowCategory }) {
+  const styles: Record<WorkflowCategory, string> = {
+    pending: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300",
+    active: "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-300",
+    completed: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300"
+  }
+
+  return (
+    <span className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${styles[category]}`}>
+      {category}
+    </span>
   )
 }

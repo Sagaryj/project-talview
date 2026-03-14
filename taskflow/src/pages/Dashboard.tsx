@@ -1,19 +1,24 @@
 import { useState } from "react"
 import { useKanban } from "../features/kanban/useKanban"
+import { useWorkflow } from "../features/kanban/useWorkflow"
+import { getCompletedStatusIds, getDefaultStatusId } from "../features/kanban/workflowConfig"
 import StatusChart from "../components/charts/StatusChart"
 import ActivityFeed from "../components/ActivityFeed"
 import { useIntl } from "react-intl"
 
 export default function Dashboard() {
   const { tasks, addTask, activity } = useKanban()
+  const { statuses } = useWorkflow()
   const [newTask, setNewTask] = useState("")
   const intl = useIntl()
+  const completedStatusIds = getCompletedStatusIds(statuses)
+  const defaultStatusId = getDefaultStatusId(statuses)
 
   const today = new Date().toISOString().split("T")[0]
 
   const stats = {
     total: tasks.length,
-    completed: tasks.filter((t) => t.status === "done").length,
+    completed: tasks.filter((t) => completedStatusIds.has(t.status)).length,
     overdue: tasks.filter((t) => t.dueDate && t.dueDate < today).length,
     dueToday: tasks.filter((t) => t.dueDate === today).length,
   }
@@ -32,16 +37,17 @@ export default function Dashboard() {
     .sort((a, b) => (a.dueDate ?? "").localeCompare(b.dueDate ?? ""))
     .slice(0, 5)
 
-  const workload = {
-    todo: tasks.filter((t) => t.status === "todo").length,
-    progress: tasks.filter((t) => t.status === "in-progress").length,
-    done: tasks.filter((t) => t.status === "done").length,
-  }
+  const workload = statuses.map((status) => ({
+    id: status.id,
+    label: status.label,
+    color: status.color,
+    value: tasks.filter((task) => task.status === status.id).length
+  }))
 
   const handleAdd = () => {
     if (!newTask.trim()) return
 
-    addTask(newTask, "todo", "medium", [], "")
+    addTask(newTask, defaultStatusId, "medium", [], "")
     setNewTask("")
   }
 
@@ -141,18 +147,14 @@ export default function Dashboard() {
 
       <Card title={intl.formatMessage({ id: "workloadIndicator" })}>
         <div className="space-y-3">
-          <Bar
-            label={intl.formatMessage({ id: "todo" })}
-            value={workload.todo}
-          />
-          <Bar
-            label={intl.formatMessage({ id: "inProgress" })}
-            value={workload.progress}
-          />
-          <Bar
-            label={intl.formatMessage({ id: "done" })}
-            value={workload.done}
-          />
+          {workload.map((item) => (
+            <Bar
+              key={item.id}
+              label={item.label}
+              value={item.value}
+              color={item.color}
+            />
+          ))}
         </div>
       </Card>
 
@@ -178,7 +180,7 @@ export default function Dashboard() {
       </Card>
 
       <Card title={intl.formatMessage({ id: "taskStatus" })}>
-        <StatusChart tasks={tasks} />
+        <StatusChart tasks={tasks} statuses={statuses} />
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -235,7 +237,15 @@ function StatCard({ title, value }: { title: string; value: number }) {
   )
 }
 
-function Bar({ label, value }: { label: string; value: number }) {
+function Bar({
+  label,
+  value,
+  color,
+}: {
+  label: string
+  value: number
+  color: string
+}) {
   return (
     <div>
       <div className="mb-1 flex justify-between text-sm">
@@ -245,8 +255,8 @@ function Bar({ label, value }: { label: string; value: number }) {
 
       <div className="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800">
         <div
-          className="h-2 rounded-full bg-indigo-600"
-          style={{ width: `${Math.min(value * 10, 100)}%` }}
+          className="h-2 rounded-full"
+          style={{ width: `${Math.min(value * 10, 100)}%`, backgroundColor: color }}
         />
       </div>
     </div>

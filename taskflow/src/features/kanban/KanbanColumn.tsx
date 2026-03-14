@@ -6,6 +6,7 @@ import { useState } from "react"
 interface Props {
   title: string
   status: TaskStatus
+  accentColor: string
   tasks: Task[]
   moveTask: (taskId: string, newStatus: TaskStatus) => void
   onAddTask: (status: TaskStatus) => void
@@ -20,6 +21,7 @@ interface Props {
 export default function KanbanColumn({
   title,
   status,
+  accentColor,
   tasks,
   moveTask,
   onAddTask,
@@ -49,23 +51,33 @@ export default function KanbanColumn({
         moveTask(taskId, status)
       }}
       className="
-        flex-1 min-h-[400px]
-        bg-neutral-100 dark:bg-neutral-900
-        rounded-2xl p-4
+        min-h-[400px]
+        min-w-[280px]
+        rounded-[28px] border border-neutral-200/80 bg-gradient-to-b from-white to-neutral-50 p-4 shadow-sm dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-950
       "
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold uppercase opacity-60">
-          {title}
-        </h3>
+        <div className="flex items-center gap-3">
+          <span
+            className="h-3 w-3 rounded-full shadow-sm"
+            style={{ backgroundColor: accentColor }}
+          />
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+              {title}
+            </h3>
+            <p className="text-xs text-neutral-400">
+              {tasks.length} tasks
+            </p>
+          </div>
+        </div>
 
         <button
           onClick={() => onAddTask(status)}
           className="
-            text-xs px-2 py-1 rounded-md
-            bg-neutral-200 dark:bg-neutral-800
-            hover:bg-neutral-300 dark:hover:bg-neutral-700
+            rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800
           "
         >
           + Add
@@ -137,4 +149,4 @@ export default function KanbanColumn({
 
     </div>
   )
-}
+} 

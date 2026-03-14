@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react"
 import * as d3 from "d3"
 import type { Task } from "../../features/kanban/types"
+import type { WorkflowStatus } from "../../types/workflow"
+import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"
 
 interface Props {
   tasks: Task[]
+  statuses: WorkflowStatus[]
 }
 
-export default function WeeklyChart({ tasks }: Props) {
+export default function WeeklyChart({ tasks, statuses }: Props) {
 
   const ref = useRef<SVGSVGElement | null>(null)
 
@@ -20,9 +23,10 @@ export default function WeeklyChart({ tasks }: Props) {
     const margin = { top: 20, right: 20, bottom: 40, left: 40 }
 
     const data = [0,0,0,0,0,0,0]
+    const completedStatusIds = getCompletedStatusIds(statuses)
 
     tasks.forEach(task => {
-      if (task.status === "done") {
+      if (completedStatusIds.has(task.status)) {
         const day = new Date().getDay()
         data[day] += 1
       }
@@ -79,7 +83,7 @@ yAxis.selectAll("path, line")
       .attr("y", d => y(d))
       .attr("height", d => height - margin.bottom - y(d))
 
-  }, [tasks])
+  }, [tasks, statuses])
 
   return <svg ref={ref} className="w-full h-[320px]" />
 }

@@ -1,6 +1,8 @@
 import { useState } from "react"
 
 import { useKanban } from "./useKanban"
+import { useWorkflow } from "./useWorkflow"
+import { getDefaultStatusId } from "./workflowConfig"
 import KanbanColumn from "./KanbanColumn"
 import TaskModal from "./TaskModal"
 import type { Task, TaskStatus } from "./types"
@@ -12,40 +14,42 @@ export default function KanbanBoard() {
     reorderTask,  updateDescription,
     draggingId, setDraggingId,updateTask,updatePriority, updateDueDate,updateTags } 
     = useKanban()
+  const { statuses } = useWorkflow()
   const[selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] =
-    useState<TaskStatus>("todo")
-    const [search, setSearch] = useState("")
-const [filter, setFilter] = useState<
-  "all" | "low" | "medium" | "high" | "Tags" | "overdue" | "today"
->("all")
-const today = new Date().toISOString().split("T")[0]
+    useState<TaskStatus>(getDefaultStatusId(statuses))
+  const [search, setSearch] = useState("")
+  const [filter, setFilter] = useState<
+    "all" | "low" | "medium" | "high" | "overdue" | "today"
+  >("all")
+  const today = new Date().toISOString().split("T")[0]
 
-const filteredTasks = tasks.filter((task) => {
+  const filteredTasks = tasks.filter((task) => {
+    if (search) {
+      const searchLower = search.toLowerCase()
+      const titleMatch = task.title.toLowerCase().includes(searchLower)
+      const tagsMatch = task.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchLower)
+      )
 
-  if (search) {
-    const searchLower = search.toLowerCase()
-    const titleMatch= task.title.toLowerCase().includes(searchLower)
-    const tagsMatch = task.tags?.some(tag =>
-      tag.toLowerCase().includes(searchLower)
-    )
-    if (!titleMatch && !tagsMatch) return false
-  }
+      if (!titleMatch && !tagsMatch) return false
+    }
 
-  if (filter === "all") return true
+    if (filter === "all") return true
 
-  if (filter === "low" || filter === "medium" || filter === "high")
-    return task.priority === filter
+    if (filter === "low" || filter === "medium" || filter === "high") {
+      return task.priority === filter
+    }
 
-  if (filter === "today")
-    return task.dueDate === today
+    if (filter === "today") return task.dueDate === today
+    if (filter === "overdue") return Boolean(task.dueDate && task.dueDate < today)
 
-  if (filter === "overdue")
-    return task.dueDate && task.dueDate < today
+    return true
+  })
 
-  return true
-})
+  const defaultStatusId = getDefaultStatusId(statuses)
+
   return (
   <div className="h-full flex flex-col">
 
@@ -78,79 +82,51 @@ const filteredTasks = tasks.filter((task) => {
     <div className="mb-6">
       <button
         onClick={() => {
-          setSelectedStatus("todo")
+          setSelectedStatus(defaultStatusId)
           setModalOpen(true)
         }}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition"
+        className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-700"
       >
-        Hey, Add Task
+        Add Task
       </button>
     </div>
 
     {/* Columns */}
-    <div className="flex gap-6 flex-1">
-      <KanbanColumn
-        title="To Do"
-        status="todo"
-        tasks={filteredTasks.filter(t => t.status === "todo")}
-        moveTask={moveTask}
-        onAddTask={(status) => {
-          setSelectedStatus(status)
-          setModalOpen(true)
-        }}
-        onDeleteTask={deleteTask}
-        reorderTask={reorderTask}
-        draggingId={draggingId}
-        setDraggingId={setDraggingId}
-        updateTask={updateTask}
-        setSelectedTask={setSelectedTask}
-      />
-
-      <KanbanColumn
-        title="In Progress"
-        status="in-progress"
-        tasks={filteredTasks.filter(t => t.status === "in-progress")}
-        moveTask={moveTask}
-        onAddTask={(status) => {
-          setSelectedStatus(status)
-          setModalOpen(true)
-        }}
-        onDeleteTask={deleteTask}
-        draggingId={draggingId}
-        setDraggingId={setDraggingId}
-        reorderTask={reorderTask}
-        updateTask={updateTask}
-        setSelectedTask={setSelectedTask}
-      />
-
-      <KanbanColumn
-        title="Done"
-        status="done"
-        tasks={filteredTasks.filter(t => t.status === "done")}
-        moveTask={moveTask}
-        onAddTask={(status) => {
-          setSelectedStatus(status)
-          setModalOpen(true)
-        }}
-        onDeleteTask={deleteTask}
-        reorderTask={reorderTask}
-        draggingId={draggingId}
-        setDraggingId={setDraggingId}
-        updateTask={updateTask}
-        setSelectedTask={setSelectedTask}
-      />
+    <div className="grid flex-1 gap-6 xl:grid-cols-3" style={{ gridTemplateColumns: `repeat(${statuses.length}, minmax(280px, 1fr))` }}>
+      {statuses.map((status) => (
+        <KanbanColumn
+          key={status.id}
+          title={status.label}
+          status={status.id}
+          accentColor={status.color}
+          tasks={filteredTasks.filter((task) => task.status === status.id)}
+          moveTask={moveTask}
+          onAddTask={(nextStatus) => {
+            setSelectedStatus(nextStatus)
+            setModalOpen(true)
+          }}
+          onDeleteTask={deleteTask}
+          reorderTask={reorderTask}
+          draggingId={draggingId}
+          setDraggingId={setDraggingId}
+          updateTask={updateTask}
+          setSelectedTask={setSelectedTask}
+        />
+      ))}
     </div>
 
     {selectedTask && (
       <TaskDetailsModal
-  task={selectedTask}
-  updateTask={updateTask}
-  updatePriority={updatePriority}
-  updateDueDate={updateDueDate}
-  updateTags={updateTags}
-  onClose={() => setSelectedTask(null)}
-  updateDescription={updateDescription}
-/>
+        task={selectedTask}
+        statuses={statuses}
+        updateTask={updateTask}
+        updateStatus={moveTask}
+        updatePriority={updatePriority}
+        updateDueDate={updateDueDate}
+        updateTags={updateTags}
+        onClose={() => setSelectedTask(null)}
+        updateDescription={updateDescription}
+      />
     )}
 
     {modalOpen && (

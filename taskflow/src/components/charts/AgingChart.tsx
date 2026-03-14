@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react"
 import * as d3 from "d3"
 import type { Task } from "../../features/kanban/types"
+import type { WorkflowStatus } from "../../types/workflow"
+import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"
 
 interface Props {
   tasks: Task[]
+  statuses: WorkflowStatus[]
 }
 
-export default function AgingChart({ tasks }: Props) {
+export default function AgingChart({ tasks, statuses }: Props) {
 
   const ref = useRef<SVGSVGElement | null>(null)
 
@@ -16,6 +19,7 @@ export default function AgingChart({ tasks }: Props) {
     svg.selectAll("*").remove()
 
     const now = new Date()
+    const completedStatusIds = getCompletedStatusIds(statuses)
 
     const aging = {
       "0-3 days": 0,
@@ -25,7 +29,7 @@ export default function AgingChart({ tasks }: Props) {
 
     tasks.forEach(task => {
 
-      if (!task.dueDate || task.status === "done") return
+      if (!task.dueDate || completedStatusIds.has(task.status)) return
 
       const diff =
         (now.getTime() - new Date(task.dueDate).getTime()) /
@@ -82,7 +86,7 @@ export default function AgingChart({ tasks }: Props) {
       .attr("y",d=>y(d.value))
       .attr("height",d=>height-y(d.value))
 
-  },[tasks])
+  },[tasks, statuses])
 
   return <svg ref={ref} className="w-full" />
 }

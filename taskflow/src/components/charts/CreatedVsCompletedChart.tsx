@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react"
 import * as d3 from "d3"
 import type { Task } from "../../features/kanban/types"
+import type { WorkflowStatus } from "../../types/workflow"
+import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"
 
 interface Props {
   tasks: Task[]
+  statuses: WorkflowStatus[]
 }
 
-export default function CreatedVsCompletedChart({ tasks }: Props) {
+export default function CreatedVsCompletedChart({ tasks, statuses }: Props) {
 
   const ref = useRef<SVGSVGElement | null>(null)
 
@@ -15,9 +18,14 @@ export default function CreatedVsCompletedChart({ tasks }: Props) {
     const svg = d3.select(ref.current)
     svg.selectAll("*").remove()
 
+    const completedStatusIds = getCompletedStatusIds(statuses)
+
     const data = [
       { label: "Created", value: tasks.length },
-      { label: "Completed", value: tasks.filter(t => t.status === "done").length }
+      {
+        label: "Completed",
+        value: tasks.filter((task) => completedStatusIds.has(task.status)).length
+      }
     ]
 
     const margin = { top: 20, right: 20, bottom: 40, left: 40 }
@@ -60,7 +68,7 @@ export default function CreatedVsCompletedChart({ tasks }: Props) {
       .attr("y", d => y(d.value))
       .attr("height", d => height - y(d.value))
 
-  }, [tasks])
+  }, [tasks, statuses])
 
   return <svg ref={ref} className="w-full" />
 }

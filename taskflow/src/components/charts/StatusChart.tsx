@@ -3,12 +3,14 @@ import * as am5 from "@amcharts/amcharts5"
 import * as am5xy from "@amcharts/amcharts5/xy"
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import type { Task } from "../../features/kanban/types"
+import type { WorkflowStatus } from "../../types/workflow"
 
 interface Props {
   tasks: Task[]
+  statuses: WorkflowStatus[]
 }
 
-export default function StatusChart({ tasks }: Props) {
+export default function StatusChart({ tasks, statuses }: Props) {
 
   const chartRef = useRef<HTMLDivElement>(null)
 
@@ -23,11 +25,11 @@ export default function StatusChart({ tasks }: Props) {
       am5xy.XYChart.new(root,{})
     )
 
-    const data = [
-      { status: "Todo", value: tasks.filter(t => t.status === "todo").length },
-      { status: "Progress", value: tasks.filter(t => t.status === "in-progress").length },
-      { status: "Done", value: tasks.filter(t => t.status === "done").length }
-    ]
+    const data = statuses.map((status) => ({
+      status: status.label,
+      value: tasks.filter((task) => task.status === status.id).length,
+      color: am5.color(status.color)
+    }))
 
     const xAxis = chart.xAxes.push(
       am5xy.CategoryAxis.new(root,{
@@ -54,12 +56,20 @@ export default function StatusChart({ tasks }: Props) {
     )
 
     series.data.setAll(data)
+    series.columns.template.adapters.add("fill", (_, target) => {
+      const context = target.dataItem?.dataContext as { color?: am5.Color } | undefined
+      return context?.color
+    })
+    series.columns.template.adapters.add("stroke", (_, target) => {
+      const context = target.dataItem?.dataContext as { color?: am5.Color } | undefined
+      return context?.color
+    })
     series.appear(1200)
     chart.appear(1200, 100)
 
     return () => root.dispose()
 
-  },[tasks])
+  },[tasks, statuses])
 
   return <div ref={chartRef} style={{height:300}} />
 }

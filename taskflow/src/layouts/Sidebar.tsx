@@ -74,6 +74,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "dashboard" })}
           icon={<LayoutDashboard size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
         <NavItem
@@ -81,6 +82,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "projects" })}
           icon={<FolderKanban size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
         <NavItem
@@ -88,6 +90,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "calendar" })}
           icon={<Calendar size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
         <NavItem
@@ -95,6 +98,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "analytics" })}
           icon={<BarChart3 size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
         <NavItem
@@ -102,6 +106,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "settings" })}
           icon={<Settings size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
         <NavItem
@@ -109,6 +114,7 @@ export default function Sidebar({
           label={intl.formatMessage({ id: "profile" })}
           icon={<User size={18} />}
           collapsed={collapsed}
+          onClick={() => setMobileOpen(false)}
         />
 
       </nav>
@@ -127,15 +133,18 @@ function NavItem({
   label,
   icon,
   collapsed,
+  onClick,
 }: {
   to: string
   label: string
   icon: React.ReactNode
   collapsed: boolean
+  onClick?: () => void
 }) {
   return (
     <NavLink
       to={to}
+      onClick={onClick}
       className={({ isActive }) =>
         `
         flex items-center gap-3 px-3 py-2 rounded-xl

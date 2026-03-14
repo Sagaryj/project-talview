@@ -1,4 +1,6 @@
 import { useKanban } from "../features/kanban/useKanban"
+import { useWorkflow } from "../features/kanban/useWorkflow"
+import { getCompletedStatusIds } from "../features/kanban/workflowConfig"
 import StatusChart from "../components/charts/StatusChart"
 import PriorityChart from "../components/charts/PriorityChart"
 import WeeklyChart from "../components/charts/WeeklyChart"
@@ -22,9 +24,11 @@ interface StatProps {
 export default function Analytics() {
 
   const { tasks } = useKanban()
+  const { statuses } = useWorkflow()
   const intl = useIntl()
+  const completedStatusIds = getCompletedStatusIds(statuses)
 
-  const completed = tasks.filter(t => t.status === "done").length
+  const completed = tasks.filter((task) => completedStatusIds.has(task.status)).length
 
   const productivity = tasks.length
     ? Math.round((completed / tasks.length) * 100)
@@ -70,7 +74,7 @@ export default function Analytics() {
       <div className="grid md:grid-cols-2 gap-6">
 
         <Card title={intl.formatMessage({ id: "Task Status Breakdown" })}>
-          <StatusChart tasks={tasks}/>
+          <StatusChart tasks={tasks} statuses={statuses}/>
         </Card>
 
         <Card title={intl.formatMessage({ id: "Priority Distribution" })}>
@@ -83,7 +87,7 @@ export default function Analytics() {
       <div className="grid md:grid-cols-2 gap-6">
 
         <Card title={intl.formatMessage({ id: "Tasks Per Week" })}>
-          <WeeklyChart tasks={tasks}/>
+          <WeeklyChart tasks={tasks} statuses={statuses}/>
         </Card>
 
         <Card title={intl.formatMessage({ id: "Tag Distribution" })}>
@@ -95,11 +99,11 @@ export default function Analytics() {
       {/* ROW 3 */}
 
       <Card title={intl.formatMessage({ id: "Task Aging" })}>
-        <AgingChart tasks={tasks}/>
+        <AgingChart tasks={tasks} statuses={statuses}/>
       </Card>
 
       <Card title={intl.formatMessage({ id: "Created Vs Completed" })}>
-        <CompletionRing tasks={tasks}/>
+        <CompletionRing tasks={tasks} statuses={statuses}/>
       </Card>
 
     </div>

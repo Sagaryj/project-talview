@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { useKanban } from "../features/kanban/useKanban"
+import { useWorkflow } from "../features/kanban/useWorkflow"
 import TaskDetailsModal from "../features/kanban/TaskDetailsModal"
 import type { Task } from "../features/kanban/types"
 
@@ -22,10 +23,12 @@ interface DraggableTaskProps {
 export default function Calendar() {
 
   const intl = useIntl()
+  const { statuses } = useWorkflow()
 
   const {
     tasks,
     updateTask,
+    moveTask,
     updatePriority,
     updateDueDate,
     updateTags,
@@ -223,8 +226,10 @@ export default function Calendar() {
         {selectedTask && (
           <TaskDetailsModal
             task={selectedTask}
+            statuses={statuses}
             onClose={() => setSelectedTask(null)}
             updateTask={updateTask}
+            updateStatus={moveTask}
             updatePriority={updatePriority}
             updateDueDate={updateDueDate}
             updateTags={updateTags}

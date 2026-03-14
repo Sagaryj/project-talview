@@ -1,13 +1,17 @@
 import type { Task } from "../../features/kanban/types"
+import type { WorkflowStatus } from "../../types/workflow"
+import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"
 
 interface Props {
   tasks: Task[]
+  statuses: WorkflowStatus[]
 }
 
-export default function CompletionRing({ tasks }: Props) {
+export default function CompletionRing({ tasks, statuses }: Props) {
+  const completedStatusIds = getCompletedStatusIds(statuses)
 
   const total = tasks.length
-  const completed = tasks.filter(t => t.status === "done").length
+  const completed = tasks.filter((task) => completedStatusIds.has(task.status)).length
 
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100)
 

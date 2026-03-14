@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { Task, TaskStatus, Priority } from "./types"
 import type { Activity } from "../../types/Activity"
+import { getWorkflowStatuses, sanitizeTasksForWorkflow } from "./workflowConfig"
 
 
 const initialTasks: Task[] = [
@@ -10,13 +11,24 @@ const initialTasks: Task[] = [
 ]
 
 export function useKanban() {
+  const instanceId = useRef(crypto.randomUUID())
+  const skipBroadcastRef = useRef(false)
 
   /* ---------------- TASK STATE ---------------- */
 
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem("kanban-tasks")
-    return saved ? JSON.parse(saved) : initialTasks
+    const workflowStatuses = getWorkflowStatuses()
+
+    try {
+      const saved = localStorage.getItem("kanban-tasks")
+      const parsedTasks = saved ? JSON.parse(saved) : initialTasks
+
+      return sanitizeTasksForWorkflow(parsedTasks, workflowStatuses)
+    } catch {
+      return sanitizeTasksForWorkflow(initialTasks, workflowStatuses)
+    }
   })
+  const lastTasksSerializedRef = useRef<string | null>(null)
 
   /* ---------------- ACTIVITY STATE ---------------- */
 
@@ -28,12 +40,82 @@ export function useKanban() {
   /* ---------------- PERSISTENCE ---------------- */
 
   useEffect(() => {
-    localStorage.setItem("kanban-tasks", JSON.stringify(tasks))
+    const serialized = JSON.stringify(tasks)
+
+    if (skipBroadcastRef.current) {
+      skipBroadcastRef.current = false
+      lastTasksSerializedRef.current = serialized
+      return
+    }
+
+    if (serialized === lastTasksSerializedRef.current) {
+      return
+    }
+
+    localStorage.setItem("kanban-tasks", serialized)
+    lastTasksSerializedRef.current = serialized
+    window.dispatchEvent(
+      new CustomEvent("taskflow:tasks-updated", {
+        detail: { sourceId: instanceId.current }
+      })
+    )
   }, [tasks])
 
   useEffect(() => {
     localStorage.setItem("kanban-activity", JSON.stringify(activity))
   }, [activity])
+
+  useEffect(() => {
+    function syncTasks() {
+      const workflowStatuses = getWorkflowStatuses()
+
+      try {
+        const saved = localStorage.getItem("kanban-tasks")
+        const parsedTasks = saved ? JSON.parse(saved) : initialTasks
+        const nextTasks = sanitizeTasksForWorkflow(parsedTasks, workflowStatuses)
+        const serialized = JSON.stringify(nextTasks)
+
+        if (serialized === lastTasksSerializedRef.current) {
+          return
+        }
+
+        skipBroadcastRef.current = true
+        setTasks(nextTasks)
+      } catch {
+        const nextTasks = sanitizeTasksForWorkflow(initialTasks, workflowStatuses)
+        const serialized = JSON.stringify(nextTasks)
+
+        if (serialized === lastTasksSerializedRef.current) {
+          return
+        }
+
+        skipBroadcastRef.current = true
+        setTasks(nextTasks)
+      }
+    }
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key === "kanban-tasks" || event.key === "workflow-statuses") {
+        syncTasks()
+      }
+    }
+
+    function handleTaskSync(event: Event) {
+      const sourceId = (event as CustomEvent<{ sourceId?: string }>).detail?.sourceId
+      if (sourceId === instanceId.current) return
+      syncTasks()
+    }
+
+    window.addEventListener("taskflow:tasks-updated", handleTaskSync)
+    window.addEventListener("taskflow:workflow-updated", syncTasks)
+    window.addEventListener("storage", handleStorage)
+
+    return () => {
+      window.removeEventListener("taskflow:tasks-updated", handleTaskSync)
+      window.removeEventListener("taskflow:workflow-updated", syncTasks)
+      window.removeEventListener("storage", handleStorage)
+    }
+  }, [])
 
   /* ---------------- DRAG STATE ---------------- */
 

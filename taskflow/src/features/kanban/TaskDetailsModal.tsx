@@ -1,9 +1,12 @@
 import { useState } from "react"
 import type { Task, Priority } from "./types"
+import type { WorkflowStatus } from "../../types/workflow"
 
 interface Props {
   task: Task
+  statuses: WorkflowStatus[]
   updateTask: (taskId: string, newTitle: string) => void
+  updateStatus: (taskId: string, status: string) => void
   updatePriority: (taskId: string, priority: Priority) => void
   onClose: () => void
   updateDueDate: (taskId: string, dueDate: string) => void
@@ -13,7 +16,9 @@ interface Props {
 
 export default function TaskDetailsModal({
   task,
+  statuses,
   updateTask,
+  updateStatus,
   updatePriority,
   updateDueDate,
   onClose,
@@ -23,12 +28,13 @@ export default function TaskDetailsModal({
   const [description, setDescription] = useState(task.description ?? "")
   const [dueDate, setDueDate] = useState(task.dueDate ?? "")
   const [title, setTitle] = useState(task.title)
+  const [status, setStatus] = useState(task.status)
   const [priority, setPriority] = useState<Priority>(task.priority)
   const [tags, setTags] = useState(task.tags?.join(", ") || "")
 const handleSave = () => {
 
   updateTask(task.id, title)
-
+  updateStatus(task.id, status)
   updatePriority(task.id, priority)
 
   updateDueDate(task.id, dueDate)
@@ -62,6 +68,20 @@ const handleSave = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border rounded-lg p-2 mt-1 mb-4"
         />
+
+        {/* Priority */}
+        <label className="text-sm text-neutral-500">Status</label>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="mb-4 w-full rounded-lg border p-2 mt-1"
+        >
+          {statuses.map((workflowStatus) => (
+            <option key={workflowStatus.id} value={workflowStatus.id}>
+              {workflowStatus.label}
+            </option>
+          ))}
+        </select>
 
         {/* Priority */}
         <label className="text-sm text-neutral-500">Priority</label>
