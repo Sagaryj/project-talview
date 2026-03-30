@@ -1,0 +1,28 @@
+{
+  "name": "taskflow-auth-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "ts-node src/server.ts",
+    "clean": "rm -rf dist",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "start": "node dist/src/server.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.1017.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.3.0",
+    "@types/pg": "^8.18.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}

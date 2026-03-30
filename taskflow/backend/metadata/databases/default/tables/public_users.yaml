@@ -1,0 +1,61 @@
+table:
+  name: users
+  schema: public
+array_relationships:
+  - name: workflow_statuses
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: workflow_statuses
+          schema: public
+        column: user_id
+  - name: tasks
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: tasks
+          schema: public
+        column: user_id
+  - name: activities
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: activities
+          schema: public
+        column: user_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - name
+        - username
+        - email
+        - preferred_language
+        - theme
+        - profile_role
+        - company
+        - timezone
+        - created_at
+        - updated_at
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - name
+        - username
+        - preferred_language
+        - theme
+        - profile_role
+        - company
+        - timezone
+        - updated_at
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      check:
+        id:
+          _eq: X-Hasura-User-Id

@@ -1,0 +1,36 @@
+type Query {
+  me: MePayload!
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload!
+  signup(name: String!, email: String!, password: String!): AuthPayload!
+  startSignup(name: String!, email: String!, password: String!): StartSignupResponse!
+  verifySignup(email: String!, otp: String!): AuthPayload!
+  moveTaskWithActivityLog(taskId: Int!, targetStatusId: Int!): MoveTaskWithActivityLogPayload!
+}
+
+type AuthPayload {
+  token: String!
+  user: AuthUser!
+}
+
+type AuthUser {
+  id: Int!
+  name: String!
+  email: String!
+}
+
+type MePayload {
+  user: AuthUser!
+}
+
+type StartSignupResponse {
+  message: String!
+}
+
+type MoveTaskWithActivityLogPayload {
+  taskId: Int!
+  activityId: Int!
+  activityMessage: String!
+}

@@ -1,0 +1,35 @@
+table:
+  name: task_tags
+  schema: public
+object_relationships:
+  - name: task
+    using:
+      foreign_key_constraint_on: task_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - task_id
+        - name
+      filter:
+        task:
+          user_id:
+            _eq: X-Hasura-User-Id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        task:
+          user_id:
+            _eq: X-Hasura-User-Id
+      columns:
+        - task_id
+        - name
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        task:
+          user_id:
+            _eq: X-Hasura-User-Id

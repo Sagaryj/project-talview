@@ -1,0 +1,10 @@
+version: 3
+endpoint: http://localhost:8082
+admin_secret: hasuraadminsecret
+metadata_directory: metadata
+migrations_directory: migrations
+seeds_directory: seeds
+
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://172.17.0.1:4000

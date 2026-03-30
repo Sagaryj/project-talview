@@ -1,0 +1,6 @@
+- "!include databases/default/tables/public_users.yaml"
+- "!include databases/default/tables/public_workflow_statuses.yaml"
+- "!include databases/default/tables/public_tasks.yaml"
+- "!include databases/default/tables/public_task_tags.yaml"
+- "!include databases/default/tables/public_activities.yaml"
+- "!include databases/default/tables/public_email_verifications.yaml"
