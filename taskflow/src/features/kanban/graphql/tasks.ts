@@ -26,7 +26,7 @@ export const FETCH_TASKS = gql`
         name
       }
     }
-  }
+} 
 `
 
 export const TASKS_SUBSCRIPTION = gql`

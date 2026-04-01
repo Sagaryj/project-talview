@@ -9,4 +9,3 @@ dataconnector:
     uri: http://data-connector-agent:8081/api/v1/oracle
   snowflake:
     uri: http://data-connector-agent:8081/api/v1/snowflake
-

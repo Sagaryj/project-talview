@@ -2,42 +2,42 @@ actions:
   - name: me
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/me
+      handler: http://host.docker.internal:4000/actions/me
       forward_client_headers: true
     permissions:
       - role: user
   - name: login
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/login
+      handler: http://host.docker.internal:4000/actions/login
       forward_client_headers: true
     permissions:
       - role: anonymous
   - name: signup
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/signup
+      handler: http://host.docker.internal:4000/actions/signup
       forward_client_headers: true
     permissions:
       - role: anonymous
   - name: startSignup
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/start-signup
+      handler: http://host.docker.internal:4000/actions/start-signup
       forward_client_headers: true
     permissions:
       - role: anonymous
   - name: verifySignup
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/verify-signup
+      handler: http://host.docker.internal:4000/actions/verify-signup
       forward_client_headers: true
     permissions:
       - role: anonymous
   - name: moveTaskWithActivityLog
     definition:
       kind: synchronous
-      handler: http://172.17.0.1:4000/actions/move-task-with-activity-log
+      handler: http://host.docker.internal:4000/actions/move-task-with-activity-log
       forward_client_headers: true
     permissions:
       - role: user
