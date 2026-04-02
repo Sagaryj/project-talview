@@ -7,7 +7,14 @@
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "jest"
+    ]
   },
-  "include": ["src/**/*.ts", "actions/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "actions/**/*.ts"
+  ]
 }
