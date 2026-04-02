@@ -15,7 +15,7 @@ describe("task action routes", () => {
     app.use(express.json())
     app.use("/actions", taskActionRouter)
 
-    await request(app).post("/actions/move-task-with-activity-log").send({})
+    await request(app).post("/actions/move-task-with-activity-log").send({ input: { taskId: 1, targetStatusId: 2 } })
 
     expect(moveTaskAction).toHaveBeenCalled()
   })

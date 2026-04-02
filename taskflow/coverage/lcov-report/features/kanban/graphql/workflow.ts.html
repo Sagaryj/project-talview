@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -145,9 +145,9 @@
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,7 +164,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -181,7 +181,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -206,7 +206,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,7 +214,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,9 +227,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { gql } from "@apollo/client"</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { gql } from "@apollo/client"
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >FETCH_WORKFLOW_STATUSES = gql`</span>
+export const FETCH_WORKFLOW_STATUSES = gql`
   query FetchWorkflowStatuses($userId: bigint!) {
     workflow_statuses(
       where: { user_id: { _eq: $userId } }
@@ -246,7 +246,7 @@ export const <span class="cstat-no" title="statement not covered" >FETCH_WORKFLO
   }
 `
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >WORKFLOW_STATUSES_SUBSCRIPTION = gql`</span>
+export const WORKFLOW_STATUSES_SUBSCRIPTION = gql`
   subscription WorkflowStatusesSubscription($userId: bigint!) {
     workflow_statuses(
       where: { user_id: { _eq: $userId } }
@@ -263,7 +263,7 @@ export const <span class="cstat-no" title="statement not covered" >WORKFLOW_STAT
   }
 `
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >CREATE_WORKFLOW_STATUS = gql`</span>
+export const CREATE_WORKFLOW_STATUS = gql`
   mutation CreateWorkflowStatus(
     $userId: bigint!
     $slug: String!
@@ -288,7 +288,7 @@ export const <span class="cstat-no" title="statement not covered" >CREATE_WORKFL
   }
 `
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >UPDATE_WORKFLOW_STATUS = gql`</span>
+export const UPDATE_WORKFLOW_STATUS = gql`
   mutation UpdateWorkflowStatus($id: bigint!, $_set: workflow_statuses_set_input!) {
     update_workflow_statuses_by_pk(pk_columns: { id: $id }, _set: $_set) {
       id
@@ -296,7 +296,7 @@ export const <span class="cstat-no" title="statement not covered" >UPDATE_WORKFL
   }
 `
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >DELETE_WORKFLOW_STATUS = gql`</span>
+export const DELETE_WORKFLOW_STATUS = gql`
   mutation DeleteWorkflowStatus($statusId: bigint!, $fallbackId: bigint!) {
     update_tasks(
       where: { workflow_status_id: { _eq: $statusId } }
@@ -316,7 +316,7 @@ export const <span class="cstat-no" title="statement not covered" >DELETE_WORKFL
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-02T06:06:34.834Z
+                at 2026-04-02T08:49:10.044Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

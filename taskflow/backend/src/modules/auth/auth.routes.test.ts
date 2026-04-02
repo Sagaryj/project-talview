@@ -25,8 +25,8 @@ describe("auth routes", () => {
     app.use(express.json())
     app.use("/api/auth", authApiRouter)
 
-    await request(app).post("/api/auth/signup").send({})
-    await request(app).post("/api/auth/login").send({})
+    await request(app).post("/api/auth/signup").send({ name: "User", email: "user@example.com", password: "secret123" })
+    await request(app).post("/api/auth/login").send({ email: "user@example.com", password: "secret123" })
     await request(app).get("/api/auth/me")
 
     expect(signup).toHaveBeenCalled()
@@ -39,8 +39,8 @@ describe("auth routes", () => {
     app.use(express.json())
     app.use("/actions", authActionRouter)
 
-    await request(app).post("/actions/start-signup").send({})
-    await request(app).post("/actions/verify-signup").send({})
+    await request(app).post("/actions/start-signup").send({ input: { name: "User", email: "user@example.com", password: "secret123" } })
+    await request(app).post("/actions/verify-signup").send({ input: { email: "user@example.com", otp: "123456" } })
 
     expect(startSignup).toHaveBeenCalled()
     expect(verifySignup).toHaveBeenCalled()

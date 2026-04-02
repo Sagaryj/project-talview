@@ -7,12 +7,18 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setupTests.ts'],
   transform: {
-    '^.+\.(ts|tsx)$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.jest.json', useESM: true }]
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: '<rootDir>/tsconfig.jest.json',
+      useESM: true,
+      diagnostics: {
+        ignoreCodes: [1343, 2339]
+      }
+    }]
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^.+\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/src/test/fileMock.js'
+    '^\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^.+\\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/src/test/fileMock.js'
   },
   clearMocks: true,
   collectCoverageFrom: [

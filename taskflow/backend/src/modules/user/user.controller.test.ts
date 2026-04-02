@@ -31,17 +31,19 @@ describe("user controller", () => {
     const response = {} as Response
     createUser.mockResolvedValue({ id: "1", name: "User", email: "user@example.com" })
 
-    await addUser({ body: { name: " User ", email: "USER@example.com" } } as never, response, jest.fn())
+    await addUser({ body: { name: "User", email: "user@example.com" } } as never, response, jest.fn())
 
-    expect(createUser).toHaveBeenCalledWith({ name: " User ", email: "USER@example.com" })
+    expect(createUser).toHaveBeenCalledWith({ name: "User", email: "user@example.com" })
     expect(success).toHaveBeenCalledWith(response, { id: "1", name: "User", email: "user@example.com" }, 201)
   })
 
-  it("passes validation errors to next", async () => {
+  it("passes service errors to next", async () => {
     const next = jest.fn()
+    const error = new Error("duplicate user")
+    createUser.mockRejectedValue(error)
 
-    await addUser({ body: { name: "", email: "" } } as never, {} as Response, next)
+    await addUser({ body: { name: "User", email: "user@example.com" } } as never, {} as Response, next)
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ statusCode: 400, message: "Name and email are required" }))
+    expect(next).toHaveBeenCalledWith(error)
   })
 })

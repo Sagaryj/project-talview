@@ -1,12 +1,12 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "verbatimModuleSyntax": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["jest", "node", "@testing-library/jest-dom"]
+    "types": ["vite/client", "jest", "node", "@testing-library/jest-dom"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

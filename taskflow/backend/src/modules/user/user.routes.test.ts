@@ -18,7 +18,7 @@ describe("user routes", () => {
     app.use("/users", userRouter)
 
     await request(app).get("/users")
-    await request(app).post("/users").send({})
+    await request(app).post("/users").send({ name: "User", email: "user@example.com" })
 
     expect(listUsers).toHaveBeenCalled()
     expect(addUser).toHaveBeenCalled()

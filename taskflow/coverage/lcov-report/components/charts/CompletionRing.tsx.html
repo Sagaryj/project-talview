@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -142,30 +142,30 @@
 <a name='L77'></a><a href='#L77'>77</a>
 <a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,30 +219,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Task } from "../../features/kanban/types"
 import type { WorkflowStatus } from "../../types/workflow"
-<span class="cstat-no" title="statement not covered" >import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"</span>
+import { getCompletedStatusIds } from "../../features/kanban/workflowConfig"
 &nbsp;
 interface Props {
   tasks: Task[]
   statuses: WorkflowStatus[]
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export default function <span class="fstat-no" title="function not covered" >C</span>ompletionRing(</span>{ tasks, statuses }: Props) {
-  const completedStatusIds = <span class="cstat-no" title="statement not covered" >getCompletedStatusIds(statuses)</span>
+export default function CompletionRing({ tasks, statuses }: Props) {
+  const completedStatusIds = getCompletedStatusIds(statuses)
 &nbsp;
-  const total = <span class="cstat-no" title="statement not covered" >tasks.length</span>
-  const completed = <span class="cstat-no" title="statement not covered" >tasks.filter(<span class="fstat-no" title="function not covered" >(t</span>ask) =&gt; <span class="cstat-no" title="statement not covered" >completedStatusIds.has(task.status))</span>.length</span>
+  const total = tasks.length
+  const completed = tasks.filter((task) =&gt; completedStatusIds.has(task.status)).length
 &nbsp;
-  const percent = <span class="cstat-no" title="statement not covered" >total === 0 ? 0 : Math.round((completed / total) * 100)</span>
+  const percent = total === 0 ? <span class="branch-0 cbranch-no" title="branch not covered" >0 </span>: Math.round((completed / total) * 100)
 &nbsp;
-  const radius = <span class="cstat-no" title="statement not covered" >70</span>
-  const stroke = <span class="cstat-no" title="statement not covered" >12</span>
-  const normalizedRadius = <span class="cstat-no" title="statement not covered" >radius - stroke * 0.5</span>
-  const circumference = <span class="cstat-no" title="statement not covered" >normalizedRadius * 2 * Math.PI</span>
+  const radius = 70
+  const stroke = 12
+  const normalizedRadius = radius - stroke * 0.5
+  const circumference = normalizedRadius * 2 * Math.PI
 &nbsp;
   const strokeDashoffset =
-<span class="cstat-no" title="statement not covered" >    circumference - (percent / 100) * circumference</span>
+    circumference - (percent / 100) * circumference
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
 &nbsp;
     &lt;div className="flex items-center justify-center"&gt;
 &nbsp;
@@ -301,7 +301,7 @@ interface Props {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-02T06:06:34.834Z
+                at 2026-04-02T08:49:10.044Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

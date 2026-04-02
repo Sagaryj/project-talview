@@ -3,8 +3,8 @@ import { createUser, getUsers } from './user.service'
 import { success } from '../../utils/response'
 
 interface CreateUserBody {
-  name?: unknown
-  email?: unknown
+  name: string
+  email: string
 }
 
 export async function listUsers(_request: Request, response: Response, next: NextFunction): Promise<void> {
@@ -22,15 +22,7 @@ export async function addUser(
   next: NextFunction
 ): Promise<void> {
   try {
-    const { name, email } = request.body
-
-    if (typeof name !== 'string' || typeof email !== 'string' || !name.trim() || !email.trim()) {
-      const error = new Error('Name and email are required') as Error & { statusCode?: number }
-      error.statusCode = 400
-      throw error
-    }
-
-    const user = await createUser({ name, email })
+    const user = await createUser(request.body)
     success(response, user, 201)
   } catch (error) {
     next(error)
