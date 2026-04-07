@@ -67,3 +67,25 @@ delete_permissions:
       filter:
         user_id:
           _eq: X-Hasura-User-Id
+event_triggers:
+  - name: tasks_created_start_temporal_reminder
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 3
+      timeout_sec: 60
+    webhook: http://host.docker.internal:4000/hasura/events/tasks-created
+  - name: tasks_updated_send_moved_email
+    definition:
+      enable_manual: false
+      update:
+        columns:
+          - workflow_status_id
+    retry_conf:
+      interval_sec: 10
+      num_retries: 3
+      timeout_sec: 60
+    webhook: http://host.docker.internal:4000/hasura/events/tasks-updated

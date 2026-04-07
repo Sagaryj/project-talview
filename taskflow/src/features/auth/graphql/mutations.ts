@@ -60,6 +60,7 @@ export const UPDATE_CURRENT_USER_MUTATION = gql`
         profile_role
         company
         timezone
+        email_notifications
       }
     }
   }

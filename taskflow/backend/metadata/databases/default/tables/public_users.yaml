@@ -36,6 +36,7 @@ select_permissions:
         - profile_role
         - company
         - timezone
+        - email_notifications
         - created_at
         - updated_at
       filter:
@@ -52,6 +53,7 @@ update_permissions:
         - profile_role
         - company
         - timezone
+        - email_notifications
         - updated_at
       filter:
         id:

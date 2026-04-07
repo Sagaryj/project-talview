@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client"
 import { RouterProvider } from "react-router-dom"
 import { ToastProvider } from "./components/ToastProvider"
 import { router } from "./app/router"
-import  I18nProvider  from "./i18n/provider"
+import I18nProvider from "./i18n/provider"
 import "./index.css"
 import { apolloClient } from "./lib/apollo"
 

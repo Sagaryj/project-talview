@@ -10,15 +10,21 @@
     "start": "node dist/src/server.js",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "temporal:worker": "npm run build && node dist/temporal/worker.js",
+    "temporal:test": "ts-node test-temporal.ts"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.1017.0",
+    "@temporalio/client": "^1.15.0",
+    "@temporalio/worker": "^1.15.0",
+    "@temporalio/workflow": "^1.15.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "joi": "^18.1.2",
+    "nodemailer": "^8.0.4",
     "pg": "^8.13.1"
   },
   "devDependencies": {
@@ -27,6 +33,7 @@
     "@types/hapi__joi": "^17.1.15",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.0",
+    "@types/nodemailer": "^8.0.0",
     "@types/pg": "^8.18.0",
     "@types/supertest": "^7.2.0",
     "jest": "^30.3.0",

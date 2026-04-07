@@ -1,373 +1,454 @@
-# Taskflow Frontend Summary for Backend Generation
+<!-- # Taskflow
 
-Use this document as the source of truth to build the backend for the current `taskflow` frontend. The frontend is a React + TypeScript + Vite app and currently stores almost everything in `localStorage`. There is no real API integration yet, so the backend should replace that local persistence with REST endpoints and PostgreSQL storage.
+Taskflow is a full-stack project workspace app built with a React + TypeScript frontend and an Express + TypeScript backend, with Hasura and PostgreSQL as the data layer.
 
-## What the frontend does
+The app includes:
+- welcome, login, and signup screens
+- OTP-based signup verification
+- dashboard overview
+- projects kanban board
+- calendar view
+- analytics view
+- settings and profile management
+- testing with Jest and Cypress
+- component documentation with Storybook
 
-This app is a task/project management dashboard with:
+## Architecture
 
-- Dashboard overview
-- Projects page with Kanban board
-- Calendar view
-- Analytics view
-- Settings page
-- Profile page
-- Internationalization support
-- Theme preference support
+High-level flow:
 
-Current frontend routes:
+```text
+Frontend (React + Apollo)
+  -> Hasura GraphQL / GraphQL subscriptions
+  -> PostgreSQL
 
+Frontend auth + Hasura Actions
+  -> Express backend
+  -> PostgreSQL / AWS SES
+```
+
+Main pieces:
+- `src/`: frontend application
+- `backend/src/`: Express backend
+- `backend/metadata/`: Hasura metadata
+- `backend/migrations/`: PostgreSQL schema migrations
+- `docker-compose.yml`: local Postgres + Hasura
+- `storybook/`: Storybook stories
+- `cypress/`: end-to-end tests
+
+## Frontend
+
+Frontend entry:
+- [src/main.tsx](/home/sagar-y-j/Desktop/Projects/taskflow/src/main.tsx)
+
+It mounts:
+- `ApolloProvider`
+- `I18nProvider`
+- `ToastProvider`
+- `RouterProvider`
+
+Routing:
+- [src/app/router.tsx](/home/sagar-y-j/Desktop/Projects/taskflow/src/app/router.tsx)
+
+Routes:
 - `/`
+- `/login`
+- `/signup`
+- `/dashboard`
 - `/projects`
 - `/calendar`
 - `/analytics`
 - `/settings`
 - `/profile`
 
-The router is mounted with basename `/project-talview`.
+Router basename:
+- `/project-talview`
 
-## Current frontend data model
+### Frontend concepts used
 
-### Task
+React:
+- component-based UI
+- hooks for state and effects
+- protected layout via `AppLayout`
 
-Frontend task shape:
+React Router:
+- route-based navigation
+- protected routes through session checks
 
-```ts
-type Priority = "low" | "medium" | "high"
+Apollo Client:
+- GraphQL queries and mutations
+- subscriptions for live board updates
 
-interface Task {
-  id: string
-  title: string
-  description?: string
-  status: string
-  priority: Priority
-  dueDate?: string
-  tags?: string[]
-}
+React Intl:
+- multi-language UI via `src/i18n`
+
+Tailwind CSS:
+- utility-first styling across pages and components
+
+Framer Motion:
+- animated transitions in layout and cards
+
+Luxon:
+- timezone-aware date/time rendering
+
+### Frontend feature flow
+
+Auth:
+- [src/pages/Login.tsx](/home/sagar-y-j/Desktop/Projects/taskflow/src/pages/Login.tsx)
+- [src/lib/auth.ts](/home/sagar-y-j/Desktop/Projects/taskflow/src/lib/auth.ts)
+
+Flow:
+1. login/signup page calls auth helpers
+2. normal login calls Hasura action `login`
+3. signup uses OTP flow:
+   - `startSignup`
+   - user enters OTP
+   - `verifySignup`
+4. auth session is stored in localStorage under `taskflow-auth`
+5. protected pages read session through `useAuthSession`
+
+Tasks and workflow:
+- [src/features/kanban/useKanban.ts](/home/sagar-y-j/Desktop/Projects/taskflow/src/features/kanban/useKanban.ts)
+- [src/features/kanban/useWorkflow.ts](/home/sagar-y-j/Desktop/Projects/taskflow/src/features/kanban/useWorkflow.ts)
+- [src/features/kanban/hasura](/home/sagar-y-j/Desktop/Projects/taskflow/src/features/kanban/hasura)
+
+Flow:
+1. page calls kanban/workflow hooks
+2. hooks fetch tasks, activities, and workflow statuses from Hasura
+3. hooks subscribe to live updates
+4. create/update/delete/reorder actions are sent through GraphQL mutations
+5. dashboard, projects, calendar, and analytics derive UI from the same task/status data
+
+## Backend
+
+Backend entry:
+- [backend/src/server.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/server.ts)
+- [backend/src/app.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/app.ts)
+
+Main backend routes:
+- `/api/health`
+- `/users`
+- `/api/auth/*`
+- `/actions/*`
+
+### Backend structure
+
+Important folders:
+- [backend/src/modules/auth](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/modules/auth)
+- [backend/src/modules/taskAction](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/modules/taskAction)
+- [backend/src/modules/user](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/modules/user)
+- [backend/src/middlewares](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/middlewares)
+- [backend/src/lib](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/lib)
+- [backend/actions](/home/sagar-y-j/Desktop/Projects/taskflow/backend/actions)
+
+Backend pattern:
+- routes
+- controllers
+- services
+- schemas
+- middleware
+
+### Backend concepts used
+
+Node.js + TypeScript:
+- typed backend modules
+- compiled build output in `backend/dist`
+
+Express:
+- HTTP server
+- route handlers
+- middleware composition
+
+PostgreSQL with `pg`:
+- direct SQL queries
+- no ORM
+
+Joi:
+- request validation
+- action input validation
+- config validation
+
+JWT + bcrypt:
+- password hashing
+- login token creation
+- auth token verification
+
+AWS SES:
+- OTP verification email
+- welcome email
+
+Hasura Actions:
+- custom business logic bridge between Hasura and Express
+
+### Backend auth flow
+
+Normal login/signup:
+- [backend/src/modules/auth/auth.routes.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/modules/auth/auth.routes.ts)
+- [backend/src/modules/auth/auth.service.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/src/modules/auth/auth.service.ts)
+
+Flow:
+1. request hits route
+2. Joi validation runs
+3. controller calls service
+4. service reads/writes Postgres
+5. service returns token + user
+
+### OTP signup flow
+
+Files:
+- [backend/actions/startSignup.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/actions/startSignup.ts)
+- [backend/actions/verifySignup.ts](/home/sagar-y-j/Desktop/Projects/taskflow/backend/actions/verifySignup.ts)
+
+Flow:
+1. frontend calls Hasura action `startSignup`
+2. Hasura calls backend `/actions/start-signup`
+3. backend:
+   - validates input
+   - checks duplicate email
+   - hashes password
+   - stores pending record in `email_verifications`
+   - sends OTP email via SES
+4. user enters OTP
+5. frontend calls Hasura action `verifySignup`
+6. Hasura calls backend `/actions/verify-signup`
+7. backend:
+   - validates OTP
+   - checks expiry
+   - creates user
+   - seeds default workflow statuses
+   - deletes verification row
+   - returns JWT + user
+   - sends welcome email
+
+## Hasura and Database
+
+Hasura metadata:
+- [backend/metadata](/home/sagar-y-j/Desktop/Projects/taskflow/backend/metadata)
+
+Migrations:
+- [backend/migrations](/home/sagar-y-j/Desktop/Projects/taskflow/backend/migrations)
+
+Tracked core tables:
+- `users`
+- `workflow_statuses`
+- `tasks`
+- `task_tags`
+- `activities`
+- `email_verifications`
+
+Hasura is used for:
+- GraphQL queries
+- GraphQL mutations
+- GraphQL subscriptions
+- custom actions for login/signup/me/startSignup/verifySignup/moveTaskWithActivityLog
+
+## Libraries and Where They Are Used
+
+### Frontend dependencies
+
+`react`, `react-dom`
+- app rendering and component model
+
+`react-router-dom`
+- route config and protected layout
+
+`@apollo/client`, `graphql`, `graphql-ws`
+- GraphQL queries, mutations, subscriptions
+
+`react-intl`
+- localization and translated UI strings
+
+`tailwindcss`
+- utility-based styling
+
+`framer-motion`
+- transitions and animated UI blocks
+
+`luxon`
+- timezone-aware date and time formatting
+
+`lucide-react`
+- icons
+
+`@dnd-kit/core`
+- drag and drop behavior in calendar
+
+`d3`, `@amcharts/amcharts5`
+- analytics/chart rendering support
+
+### Backend dependencies
+
+`express`
+- backend server and routing
+
+`cors`
+- cross-origin support for local dev
+
+`pg`
+- PostgreSQL access
+
+`bcryptjs`
+- password hashing and verification
+
+`joi`
+- validation schemas and middleware
+
+`dotenv`
+- environment variable loading
+
+`@aws-sdk/client-ses`
+- verification and welcome emails
+
+## Validation
+
+Backend validation pattern:
+- [backend/README_VALIDATION.md](/home/sagar-y-j/Desktop/Projects/taskflow/backend/README_VALIDATION.md)
+
+Current validation points:
+- login/signup payloads
+- OTP start/verify payloads
+- user payloads
+- task action payloads
+- startup env config
+
+## Testing
+
+### Frontend tests
+
+Frameworks:
+- Jest
+- React Testing Library
+
+Examples:
+- page tests
+- hook tests
+- layout tests
+- kanban logic tests
+
+Test setup:
+- [jest.config.cjs](/home/sagar-y-j/Desktop/Projects/taskflow/jest.config.cjs)
+- [src/test](/home/sagar-y-j/Desktop/Projects/taskflow/src/test)
+
+### Backend tests
+
+Frameworks:
+- Jest
+- Supertest
+
+Coverage includes:
+- auth helpers
+- middleware
+- services
+- route/controller behavior
+- OTP action files
+
+### Cypress
+
+Cypress is used for mock-auth frontend E2E coverage.
+
+Important folders:
+- [cypress/e2e](/home/sagar-y-j/Desktop/Projects/taskflow/cypress/e2e)
+- [cypress/support](/home/sagar-y-j/Desktop/Projects/taskflow/cypress/support)
+- [cypress/fixtures](/home/sagar-y-j/Desktop/Projects/taskflow/cypress/fixtures)
+
+### Storybook
+
+Storybook is used for component isolation and UI documentation.
+
+Important folders:
+- [.storybook](/home/sagar-y-j/Desktop/Projects/taskflow/.storybook)
+- [storybook](/home/sagar-y-j/Desktop/Projects/taskflow/storybook)
+
+## Local Development Flow
+
+### 1. Start Postgres and Hasura
+
+```bash
+cd ~/Desktop/Projects/taskflow
+docker compose up -d --build
 ```
 
-### Workflow status
+### 2. Start backend
 
-Frontend workflow status shape:
-
-```ts
-type WorkflowCategory = "pending" | "active" | "completed"
-
-interface WorkflowStatus {
-  id: string
-  label: string
-  color: string
-  category: WorkflowCategory
-  system: boolean
-}
+```bash
+cd ~/Desktop/Projects/taskflow/backend
+npm run dev
 ```
 
-Default workflow statuses:
+### 3. Start frontend
 
-```json
-[
-  { "id": "todo", "label": "Todo", "color": "#64748b", "category": "pending", "system": true },
-  { "id": "in-progress", "label": "In Progress", "color": "#6366f1", "category": "active", "system": true },
-  { "id": "done", "label": "Done", "color": "#22c55e", "category": "completed", "system": true }
-]
+```bash
+cd ~/Desktop/Projects/taskflow
+npm run dev
 ```
 
-### Activity log
+### 4. Apply Hasura metadata/migrations when needed
 
-```ts
-interface Activity {
-  id: string
-  message: string
-  timestamp: number
-}
+```bash
+cd ~/Desktop/Projects/taskflow/backend
+hasura migrate apply
+hasura metadata apply
+hasura metadata reload
 ```
 
-## Frontend behavior the backend must support
+### 5. Test commands
 
-### Task operations
+Frontend:
 
-The frontend currently supports:
-
-- Create task
-- Update task title
-- Update task description
-- Update task status
-- Update task priority
-- Update task due date
-- Update task tags
-- Delete task
-- Reorder tasks within the same column/status
-- Filter tasks by priority, due today, overdue
-- Search tasks by title or tags
-
-### Workflow operations
-
-The frontend currently supports:
-
-- List workflow statuses
-- Add custom workflow status
-- Remove workflow status
-- Move workflow status left/right
-- Reset workflow to defaults
-
-Important rule:
-
-- If a workflow status is removed, tasks using that status must be migrated to a fallback non-completed status.
-
-### Dashboard and analytics needs
-
-The frontend derives these values from task data:
-
-- Total tasks
-- Completed tasks
-- Due today
-- Overdue tasks
-- Project completion percentage
-- Focus today list
-- Upcoming deadlines
-- Workload by status
-- Recent tasks
-- Activity feed
-
-Backend can either:
-
-- Return raw tasks/statuses and let frontend compute these
-- Or provide summary/statistics endpoints for efficiency
-
-## Recommended database design
-
-Use PostgreSQL.
-
-Suggested tables:
-
-### `users`
-
-- `id` uuid primary key
-- `name` text
-- `email` text unique
-- `password_hash` text
-- `preferred_language` text default `'en'`
-- `theme` text default `'light'`
-- `created_at`
-- `updated_at`
-
-### `workflow_statuses`
-
-- `id` uuid primary key
-- `user_id` uuid references `users(id)` on delete cascade
-- `slug` text
-- `label` text
-- `color` text
-- `category` text check in `pending|active|completed`
-- `system` boolean default false
-- `position` integer
-- `created_at`
-- `updated_at`
-
-Constraint recommendation:
-
-- unique `(user_id, slug)`
-
-### `tasks`
-
-- `id` uuid primary key
-- `user_id` uuid references `users(id)` on delete cascade
-- `title` text not null
-- `description` text nullable
-- `workflow_status_id` uuid references `workflow_statuses(id)`
-- `priority` text check in `low|medium|high`
-- `due_date` date nullable
-- `position` integer
-- `created_at`
-- `updated_at`
-
-### `task_tags`
-
-- `id` uuid primary key
-- `task_id` uuid references `tasks(id)` on delete cascade
-- `name` text not null
-
-Constraint recommendation:
-
-- unique `(task_id, name)`
-
-### `activities`
-
-- `id` uuid primary key
-- `user_id` uuid references `users(id)` on delete cascade
-- `task_id` uuid nullable references `tasks(id)` on delete set null
-- `message` text not null
-- `created_at` timestamptz not null default now()
-
-## Recommended API
-
-Base path suggestion: `/api`
-
-### Auth
-
-Even though auth is not wired in the current frontend, build it now because multi-user data requires ownership.
-
-- `POST /auth/register`
-- `POST /auth/login`
-- `GET /auth/me`
-- `POST /auth/logout`
-
-Use JWT or secure session cookies.
-
-### Tasks
-
-- `GET /tasks`
-- `POST /tasks`
-- `GET /tasks/:id`
-- `PATCH /tasks/:id`
-- `DELETE /tasks/:id`
-- `PATCH /tasks/reorder`
-
-Suggested `GET /tasks` filters:
-
-- `status`
-- `priority`
-- `search`
-- `due=today`
-- `due=overdue`
-
-Suggested create/update payload:
-
-```json
-{
-  "title": "Design dashboard UI",
-  "description": "Create first pass of layout",
-  "statusId": "uuid-or-slug",
-  "priority": "medium",
-  "dueDate": "2026-03-20",
-  "tags": ["frontend", "design"]
-}
+```bash
+cd ~/Desktop/Projects/taskflow
+npm run test
 ```
 
-### Workflow statuses
+Backend:
 
-- `GET /workflow-statuses`
-- `POST /workflow-statuses`
-- `PATCH /workflow-statuses/:id`
-- `DELETE /workflow-statuses/:id`
-- `PATCH /workflow-statuses/reorder`
-- `POST /workflow-statuses/reset`
+```bash
+cd ~/Desktop/Projects/taskflow/backend
+npm run test
+```
 
-### Activities
+Cypress:
 
-- `GET /activities`
+```bash
+cd ~/Desktop/Projects/taskflow
+npx cypress open
+```
 
-### Optional dashboard endpoints
+Storybook:
 
-- `GET /dashboard/summary`
-- `GET /analytics/summary`
+```bash
+cd ~/Desktop/Projects/taskflow
+npm run storybook
+```
 
-## Backend rules and validation
+## Useful URLs
 
-- `title` is required for tasks
-- `priority` must be `low`, `medium`, or `high`
-- `category` must be `pending`, `active`, or `completed`
-- Due date should be stored as a SQL `date`
-- Tags should be trimmed and deduplicated
-- Workflow status order must be stable
-- Task order must be stable within each workflow column
-- System workflow statuses should not be removable unless reset logic handles them explicitly
-- Deleting a workflow status must migrate affected tasks to a fallback status
-- Every task, workflow status, and activity should belong to a user
+- Frontend: `http://localhost:5173/project-talview`
+- Hasura console: `http://localhost:8082`
+- Backend: `http://localhost:4000`
+- Storybook: `http://localhost:6006`
 
-## Implementation guidance
+## Supporting Docs
 
-Please build:
+- [README_RUN.md](/home/sagar-y-j/Desktop/Projects/taskflow/README_RUN.md)
+- [CHATGPT_HANDOFF.md](/home/sagar-y-j/Desktop/Projects/taskflow/CHATGPT_HANDOFF.md)
+- [backend/README_VALIDATION.md](/home/sagar-y-j/Desktop/Projects/taskflow/backend/README_VALIDATION.md)
 
-1. Node.js backend in TypeScript
-2. Express or a similarly simple HTTP framework
-3. PostgreSQL integration using the existing `backend/src/config/db.ts`
-4. Clear route/controller/service structure
-5. SQL migration files or schema setup
-6. Request validation
-7. Auth middleware
-8. Seed script for default workflow statuses per new user
-9. README with local setup instructions
+## Current Project Status
 
-## Important notes from the current repo
+What is already implemented:
+- full frontend app shell and feature pages
+- GraphQL + Hasura-based task/workflow/activity flow
+- Express backend with modular structure
+- JWT auth
+- OTP signup with email verification
+- welcome email after verification
+- Joi validation
+- Jest coverage for frontend and backend
+- Cypress mock-auth E2E structure
+- Storybook component stories
 
-- Backend currently only has PostgreSQL pool config in `backend/src/config/db.ts`
-- Frontend currently uses `localStorage` for tasks, workflow statuses, activities, language, theme, profile, and settings
-- I did not find active frontend auth API usage in the current codebase
-- I did not find a real login page in the current `taskflow/src` tree, so auth should be added in a backend-friendly way without assuming completed frontend wiring
-
-## Deliverable request for Claude
-
-Build the backend for this app using TypeScript, Express, PostgreSQL, and a clean folder structure. Implement authentication, task CRUD, workflow status management, task reordering, activities, validation, database schema/migrations, and seed logic for default statuses. Keep the API easy for the current frontend to integrate with, and document all endpoints and setup steps clearly.
-
-## Docker setup
-
-This repo now includes Docker setup for PostgreSQL and Hasura.
-
-Files added:
-
-- `docker-compose.yml`
-- `.env.example`
-- `docker/postgres/init/01-init.sql`
-
-### Quick start
-
-1. Copy `.env.example` to `.env`
-2. Run `docker compose up -d`
-3. Open Hasura console at `http://localhost:8080`
-4. Use the admin secret from `.env`
-
-### Default local services
-
-- PostgreSQL: `localhost:5432`
-- Hasura: `localhost:8080`
-
-### Backend database env
-
-The backend DB config now reads:
-
-- `DB_HOST`
-- `DB_PORT`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
-
-If your backend runs on your host machine while Postgres runs in Docker, use:
-
-- `DB_HOST=localhost`
-
-If your backend later runs in Docker on the same network, use:
-
-- `DB_HOST=postgres`
-
-## Hasura table filtering
-
-Because workflow statuses, tasks, and activities are user-owned, the Hasura table view will show repeated `todo`, `in-progress`, and `done` rows across different users. That is expected.
-
-To inspect only one user in Hasura:
-
-1. Open Hasura console at `http://localhost:8082`
-2. Go to `Data`
-3. Open the `users` table and note the `id` of the user you want to inspect
-4. Open one of the related tables and add a filter on `user_id`
-
-Recommended filters:
-
-- `workflow_statuses`: `user_id _eq <your_user_id>`
-- `tasks`: `user_id _eq <your_user_id>`
-- `activities`: `user_id _eq <your_user_id>`
-
-Useful example:
-
-- If the logged-in user has `id = 4`, then in Hasura use `user_id _eq 4`
-
-What you should expect after filtering:
-
-- exactly one default `todo`
-- exactly one default `in-progress`
-- exactly one default `done`
-- only that user’s tasks and activities
-
-Note:
-
-- `task_tags` does not have `user_id`, so inspect it through the task relationship or by filtering `task_id` values belonging to that user’s tasks.
+What to keep in mind:
+- Hasura action handlers must point to the reachable backend host in local Docker/dev
+- OTP email sending depends on valid AWS credentials and SES configuration
+- Cypress task coverage should always be aligned with the actual app route/API contract -->

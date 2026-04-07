@@ -21,9 +21,7 @@ interface UserProfile {
 
 interface UserSettings {
   theme: Theme
-  compactLayout: boolean
   emailNotifications: boolean
-  taskNotifications: boolean
   defaultPriority: Priority
 }
 
@@ -80,9 +78,7 @@ export default function Settings() {
 
     return {
       theme: normalizeTheme(session?.user.theme),
-      compactLayout: false,
-      emailNotifications: true,
-      taskNotifications: true,
+      emailNotifications: session?.user.emailNotifications ?? true,
       defaultPriority: "medium"
     }
   })
@@ -106,7 +102,8 @@ export default function Settings() {
         setLanguage(user.preferredLanguage ?? localStorage.getItem("app-language") ?? "en")
         setSettings((prev) => ({
           ...prev,
-          theme: normalizeTheme(user.theme)
+          theme: normalizeTheme(user.theme),
+          emailNotifications: user.emailNotifications ?? true
         }))
       } catch {
         if (!cancelled) {
@@ -184,7 +181,8 @@ export default function Settings() {
         theme: settings.theme,
         profileRole: profile.profileRole.trim() || "Member",
         company: profile.company.trim(),
-        timezone: normalizeTimezone(profile.timezone)
+        timezone: normalizeTimezone(profile.timezone),
+        emailNotifications: settings.emailNotifications
       })
 
       const nextLanguage = updatedUser.preferredLanguage ?? language
@@ -332,25 +330,12 @@ export default function Settings() {
         </div>
       </Section>
 
-      <Section title="Appearance">
-        <Toggle
-          label="Compact Layout"
-          value={settings.compactLayout}
-          onChange={(v) => updateSetting("compactLayout", v)}
-        />
-      </Section>
 
       <Section title="Notifications">
         <Toggle
           label="Email Notifications"
           value={settings.emailNotifications}
           onChange={(v) => updateSetting("emailNotifications", v)}
-        />
-
-        <Toggle
-          label="Task Updates"
-          value={settings.taskNotifications}
-          onChange={(v) => updateSetting("taskNotifications", v)}
         />
       </Section>
 

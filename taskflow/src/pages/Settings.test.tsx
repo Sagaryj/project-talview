@@ -59,7 +59,8 @@ describe("Settings", () => {
     theme: "dark",
     profileRole: "Developer",
     company: "TaskFlow",
-    timezone: "Asia/Kolkata"
+    timezone: "Asia/Kolkata",
+    emailNotifications: true
   }
 
   beforeEach(() => {
@@ -109,7 +110,8 @@ describe("Settings", () => {
         theme: "dark",
         profileRole: "Developer",
         company: "TaskFlow",
-        timezone: "Asia/Kolkata"
+        timezone: "Asia/Kolkata",
+        emailNotifications: true
       })
     })
 

@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-04-07T08:42:48.422Z",
+    "end": "2026-04-07T08:42:53.032Z",
+    "duration": 4610,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "521108f0-7038-4ff1-9fd8-ad3e35c00caf",
+      "title": "",
+      "fullFile": "cypress/e2e/features/tasks.cy.ts",
+      "file": "cypress/e2e/features/tasks.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "d5a99c72-e4b8-4bc9-a4f0-6786493c436f",
+          "title": "Tasks feature",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "lists tasks returned by the mocked GraphQL API",
+              "fullTitle": "Tasks feature lists tasks returned by the mocked GraphQL API",
+              "timedOut": null,
+              "duration": 1960,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('h1', 'Projects').should('be.visible');\ncy.contains('Design login experience').should('be.visible');\ncy.contains('Ship kanban filters').should('be.visible');",
+              "err": {},
+              "uuid": "e852deeb-628b-432d-9679-0973969c59db",
+              "parentUUID": "d5a99c72-e4b8-4bc9-a4f0-6786493c436f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "creates a new task from the board modal",
+              "fullTitle": "Tasks feature creates a new task from the board modal",
+              "timedOut": null,
+              "duration": 1602,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.openCreateTaskModal();\ncy.createBoardTask('Write Cypress coverage');\ncy.wait('@createTask').its('request.body.variables').should(function (variables) {\n    expect(variables.title).to.equal('Write Cypress coverage');\n    expect(variables.workflowStatusId).to.equal(101);\n    expect(variables.priority).to.equal('medium');\n});\ncy.wait('@createActivity').its('request.body.variables.message').should('contain', 'Write Cypress coverage');",
+              "err": {},
+              "uuid": "8e6fcd4e-9e05-4d1b-822c-e071fb41028e",
+              "parentUUID": "d5a99c72-e4b8-4bc9-a4f0-6786493c436f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "deletes an existing task from the board",
+              "fullTitle": "Tasks feature deletes an existing task from the board",
+              "timedOut": null,
+              "duration": 846,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.deleteBoardTask('Design login experience');\ncy.wait('@deleteTask').its('request.body.variables.id').should('eq', 201);",
+              "err": {},
+              "uuid": "20068759-16fc-49ee-ae49-67eba18b3fd1",
+              "parentUUID": "d5a99c72-e4b8-4bc9-a4f0-6786493c436f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "e852deeb-628b-432d-9679-0973969c59db",
+            "8e6fcd4e-9e05-4d1b-822c-e071fb41028e",
+            "20068759-16fc-49ee-ae49-67eba18b3fd1"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 4408,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

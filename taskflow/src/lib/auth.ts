@@ -21,6 +21,7 @@ export interface AuthUser {
   profileRole?: string
   company?: string
   timezone?: string
+  emailNotifications?: boolean
 }
 
 export interface AuthSession {
@@ -50,6 +51,7 @@ interface CurrentUserRecord {
   profile_role?: string | null
   company?: string | null
   timezone?: string | null
+  email_notifications?: boolean | null
 }
 
 interface CurrentUserQueryResponse {
@@ -70,6 +72,7 @@ export interface UpdateCurrentUserProfileInput {
   profileRole: string
   company: string
   timezone: string
+  emailNotifications?: boolean
 }
 
 function dispatchAuthSessionChanged() {
@@ -87,6 +90,11 @@ function normalizeAuthUser(value: CurrentUserRecord | AuthUser): AuthUser {
       ? (value.profile_role ?? undefined)
       : ("profileRole" in value ? value.profileRole : undefined)
 
+  const emailNotifications =
+    "email_notifications" in value
+      ? (value.email_notifications ?? undefined)
+      : ("emailNotifications" in value ? value.emailNotifications : undefined)
+
   return {
     id: value.id,
     name: value.name,
@@ -96,7 +104,8 @@ function normalizeAuthUser(value: CurrentUserRecord | AuthUser): AuthUser {
     theme: value.theme ?? undefined,
     profileRole,
     company: "company" in value ? (value.company ?? undefined) : undefined,
-    timezone: "timezone" in value ? (value.timezone ?? undefined) : undefined
+    timezone: "timezone" in value ? (value.timezone ?? undefined) : undefined,
+    emailNotifications
   }
 }
 
@@ -256,6 +265,7 @@ export async function updateCurrentUserProfile(input: UpdateCurrentUserProfileIn
           profile_role: input.profileRole,
           company: input.company,
           timezone: input.timezone,
+          email_notifications: input.emailNotifications ?? session.user.emailNotifications ?? true,
           updated_at: new Date().toISOString()
         }
       }

@@ -67,3 +67,14 @@ delete_permissions:
       filter:
         user_id:
           _eq: X-Hasura-User-Id
+event_triggers:
+  - name: workflow_status_created_email_update
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 3
+      timeout_sec: 60
+    webhook: http://host.docker.internal:4000/hasura/events/workflow-status-created

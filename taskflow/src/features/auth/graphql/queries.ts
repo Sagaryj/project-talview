@@ -12,6 +12,7 @@ export const CURRENT_USER_QUERY = gql`
       profile_role
       company
       timezone
+      email_notifications
     }
   }
 `
