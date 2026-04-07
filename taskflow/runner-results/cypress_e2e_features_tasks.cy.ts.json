@@ -1,0 +1,10 @@
+{
+  "suites": 1,
+  "tests": 3,
+  "passes": 3,
+  "pending": 0,
+  "failures": 0,
+  "start": "2026-04-07T06:15:47.859Z",
+  "duration": 11430,
+  "file": "cypress/e2e/features/tasks.cy.ts"
+}

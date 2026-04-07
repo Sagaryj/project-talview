@@ -1,0 +1,8 @@
+{
+  "token": "mock-token",
+  "user": {
+    "id": 1,
+    "name": "Cypress User",
+    "email": "cypress@example.com"
+  }
+}

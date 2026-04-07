@@ -1,0 +1,163 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-04-07T06:36:29.348Z",
+    "end": "2026-04-07T06:36:33.999Z",
+    "duration": 4651,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "6ffc0c21-71b3-451f-b17a-7f74793a05f7",
+      "title": "",
+      "fullFile": "cypress/e2e/auth/protected.cy.ts",
+      "file": "cypress/e2e/auth/protected.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "aebed4cf-d461-47d0-bc55-564263854a7a",
+          "title": "Protected routes",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "redirects dashboard access to login when no session exists",
+              "fullTitle": "Protected routes redirects dashboard access to login when no session exists",
+              "timedOut": null,
+              "duration": 2231,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.url().should('include', '/login');",
+              "err": {},
+              "uuid": "351e4f3a-22a4-4499-a720-ab83be5137e1",
+              "parentUUID": "aebed4cf-d461-47d0-bc55-564263854a7a",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "opens a protected page when a mocked session exists",
+              "fullTitle": "Protected routes opens a protected page when a mocked session exists",
+              "timedOut": null,
+              "duration": 1254,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.mockLoginAndVisit('/settings');\ncy.url().should('include', '/settings');",
+              "err": {},
+              "uuid": "5fe05fd3-bf1e-401f-b4e4-3cbea62e339a",
+              "parentUUID": "aebed4cf-d461-47d0-bc55-564263854a7a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "351e4f3a-22a4-4499-a720-ab83be5137e1",
+            "5fe05fd3-bf1e-401f-b4e4-3cbea62e339a"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3485,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "c27aa2a3-7559-40c9-81f4-34fd4a208e6a",
+          "title": "Protected routes",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "redirects dashboard access to login when no session exists",
+              "fullTitle": "Protected routes redirects dashboard access to login when no session exists",
+              "timedOut": null,
+              "duration": 721,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.url().should('include', '/login');",
+              "err": {},
+              "uuid": "a6897307-bbbd-49ff-a55d-a2b7eb34949e",
+              "parentUUID": "c27aa2a3-7559-40c9-81f4-34fd4a208e6a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a6897307-bbbd-49ff-a55d-a2b7eb34949e"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 721,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

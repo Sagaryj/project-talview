@@ -1,0 +1,10 @@
+{
+  "suites": 1,
+  "tests": 1,
+  "passes": 0,
+  "pending": 0,
+  "failures": 1,
+  "start": "2026-04-07T06:15:08.975Z",
+  "duration": 24988,
+  "file": "cypress/e2e/features/dashboard.cy.ts"
+}

@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-04-07T06:25:08.726Z",
+    "end": "2026-04-07T06:25:25.527Z",
+    "duration": 16801,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "846d87df-bf73-4e89-afe4-c9a5133c20e5",
+      "title": "",
+      "fullFile": "cypress/e2e/features/dashboard.cy.ts",
+      "file": "cypress/e2e/features/dashboard.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "6fc3c681-1ae9-496f-ae98-20b7817c2a17",
+          "title": "Dashboard feature",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "renders the dashboard page for an authenticated user",
+              "fullTitle": "Dashboard feature renders the dashboard page for an authenticated user",
+              "timedOut": null,
+              "duration": 5215,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains(/dashboard/i).should('not.be.visible');\ncy.screenshot('dashboard-page');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: expected '<a..flex.items-center.gap-3.px-3.py-2.rounded-xl.transition-all.duration-200.bg-neutral-800.text-white.>' not to be 'visible'",
+                "estack": "AssertionError: Timed out retrying after 4000ms: expected '<a..flex.items-center.gap-3.px-3.py-2.rounded-xl.transition-all.duration-200.bg-neutral-800.text-white.>' not to be 'visible'\n    at Context.eval (webpack://taskflow/./cypress/e2e/features/dashboard.cy.ts:7:30)",
+                "diff": null
+              },
+              "uuid": "4eb3118e-0337-45a6-9ceb-f1e43d6c1dd3",
+              "parentUUID": "6fc3c681-1ae9-496f-ae98-20b7817c2a17",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "4eb3118e-0337-45a6-9ceb-f1e43d6c1dd3"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 5215,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
