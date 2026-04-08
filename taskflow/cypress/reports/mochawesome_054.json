@@ -1,0 +1,124 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-04-08T06:22:19.172Z",
+    "end": "2026-04-08T06:22:22.107Z",
+    "duration": 2935,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b1684fba-5d03-423b-97cd-659a43990245",
+      "title": "",
+      "fullFile": "cypress/e2e/auth/login.cy.ts",
+      "file": "cypress/e2e/auth/login.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4189fc84-84dc-4a4b-bf64-4a60761f811e",
+          "title": "Login",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "shows the login page for unauthenticated users",
+              "fullTitle": "Login shows the login page for unauthenticated users",
+              "timedOut": null,
+              "duration": 1588,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains(/log in/i).should('be.visible');",
+              "err": {},
+              "uuid": "259581f0-b7fb-4f52-8c47-fed4fa2a6310",
+              "parentUUID": "4189fc84-84dc-4a4b-bf64-4a60761f811e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "allows mocked login without calling the backend",
+              "fullTitle": "Login allows mocked login without calling the backend",
+              "timedOut": null,
+              "duration": 1242,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.mockLogin();\ncy.visit('/dashboard');\ncy.url().should('include', '/dashboard');",
+              "err": {},
+              "uuid": "a10b3ec0-f6d0-481e-978e-8cb6bf36ce5a",
+              "parentUUID": "4189fc84-84dc-4a4b-bf64-4a60761f811e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "259581f0-b7fb-4f52-8c47-fed4fa2a6310",
+            "a10b3ec0-f6d0-481e-978e-8cb6bf36ce5a"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2830,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

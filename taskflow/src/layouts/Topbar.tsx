@@ -1,4 +1,4 @@
-import { Search, Sun, Moon, LogOut, KeyRound, HelpCircle } from "lucide-react"
+import { Search, Sun, Moon, LogOut, KeyRound } from "lucide-react"
 import { useTheme } from "../hooks/useTheme"
 import { useState, useRef, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
@@ -137,7 +137,7 @@ export default function Topbar({
                 "
               >
                 <MenuItem icon={<KeyRound size={16}/>}>{intl.formatMessage({ id: "changePassword" })}</MenuItem>
-                <MenuItem icon={<HelpCircle size={16}/>}>{intl.formatMessage({ id: "faq" })}</MenuItem>
+                
 
                 <div className="border-t border-neutral-200 dark:border-neutral-800 my-2"/>
 
