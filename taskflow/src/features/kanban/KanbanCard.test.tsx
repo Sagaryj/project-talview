@@ -10,7 +10,10 @@ jest.mock("../../components/toast-context", () => ({
 
 jest.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>
+    div: ({ children, layout, ...props }: React.HTMLAttributes<HTMLDivElement> & { layout?: boolean }) => {
+      void layout
+      return <div {...props}>{children}</div>
+    }
   }
 }))
 

@@ -21,10 +21,13 @@ svgChain.selectAll = jest.fn(() => ({ remove }))
 svgChain.attr = jest.fn(() => svgChain)
 svgChain.append = jest.fn(() => chartChain)
 
-const select = jest.fn((_: unknown) => svgChain)
+const select = jest.fn(() => svgChain)
 
 jest.mock('d3', () => ({
-  select: (value: unknown) => select(value),
+  select: (value: unknown) => {
+    void value
+    return select()
+  },
   scaleBand: () => ({ domain: jest.fn(() => ({ range: jest.fn(() => ({ padding: jest.fn(() => ({ bandwidth: () => 10 })) })) })) }),
   scaleLinear: () => ({ domain: jest.fn(() => ({ range: jest.fn(() => ({}) ) })) }),
   max: () => 2,

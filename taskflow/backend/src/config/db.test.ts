@@ -16,14 +16,14 @@ describe("db config", () => {
     mockPoolConstructor.mockClear()
   })
 
-  it("creates the pool with env values", () => {
+  it("creates the pool with env values", async () => {
     process.env.DB_USER = "demo-user"
     process.env.DB_PASSWORD = "demo-pass"
     process.env.DB_HOST = "db-host"
     process.env.DB_PORT = "6543"
     process.env.DB_NAME = "demo-db"
 
-    const { pool } = require("./db") as typeof import("./db")
+    const { pool } = await import("./db")
 
     expect(pool).toBeDefined()
     expect(mockPoolConstructor).toHaveBeenCalledWith({

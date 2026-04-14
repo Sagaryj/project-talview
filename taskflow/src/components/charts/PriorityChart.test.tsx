@@ -34,10 +34,13 @@ svgChain.selectAll = jest.fn(() => ({ remove }))
 svgChain.attr = jest.fn(() => svgChain)
 svgChain.append = jest.fn(() => gChain)
 
-const select = jest.fn((_: unknown) => svgChain)
+const select = jest.fn(() => svgChain)
 
 jest.mock('d3', () => ({
-  select: (value: unknown) => select(value),
+  select: (value: unknown) => {
+    void value
+    return select()
+  },
   scaleOrdinal: () => ({ range: jest.fn(() => jest.fn((value: string) => value)) }),
   pie: () => ({ value: jest.fn(() => (data: unknown) => data) }),
   arc: () => ({ innerRadius: jest.fn(() => ({ outerRadius: jest.fn(() => ({ centroid: () => [0, 0] })) })) }),

@@ -5,7 +5,6 @@ import {
   getAuthSession,
   login,
   saveAuthSession,
-  signup,
   startSignup,
   verifySignup
 } from "../lib/auth"

@@ -8,3 +8,16 @@ seeds_directory: seeds
 actions:
   kind: synchronous
   handler_webhook_baseurl: http://172.17.0.1:4000
+
+# 1.knex no direct ql
+# 2.too much code in one filter
+# 3.rendunty checks 
+# 4.hasura migrate create 
+# 5 have separate grapghql folder n then have it in that 
+# 6. move actions to src 
+
+# handlers
+# models
+# utils
+
+# lib

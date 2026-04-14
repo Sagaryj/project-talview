@@ -10,6 +10,7 @@ export function errorMiddleware(
   response: Response,
   _next: NextFunction
 ): void {
+  void _next
   const statusCode = error.statusCode ?? 500
   const message = error.message || 'Unknown error'
 

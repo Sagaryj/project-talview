@@ -59,7 +59,7 @@ export default function KanbanBoard() {
         placeholder="Search tasks..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="px-3 py-2 border rounded-lg text-sm"
+        className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:placeholder:text-neutral-500"
       />
 
       <select
@@ -67,14 +67,14 @@ export default function KanbanBoard() {
         onChange={(e) =>
           setFilter(e.target.value as typeof filter)
         }
-        className="px-3 py-2 border rounded-lg text-sm"
+        className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
       >
-        <option value="all">All</option>
-        <option value="low">Low Priority</option>
-        <option value="medium">Medium Priority</option>
-        <option value="high">High Priority</option>
-        <option value="today">Due Today</option>
-        <option value="overdue">Overdue</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="all">All</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="low">Low Priority</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="medium">Medium Priority</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="high">High Priority</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="today">Due Today</option>
+        <option className="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white" value="overdue">Overdue</option>
       </select>
     </div>
 

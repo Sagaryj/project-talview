@@ -1,9 +1,9 @@
-import dotenv from 'dotenv'
-import Joi from 'joi'
+import dotenv from 'dotenv' 
+import Joi from 'joi' 
 
-dotenv.config({ path: '../.env' })
-dotenv.config()
-
+dotenv.config({ path: '../.env' }) 
+dotenv.config() 
+ 
 const envSchema = Joi.object({
   API_PORT: Joi.number().integer().min(1).max(65535).default(4000),
   AUTH_TOKEN_SECRET: Joi.string().min(16).optional(),

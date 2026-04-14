@@ -14,10 +14,10 @@ describe("server", () => {
     jest.resetModules()
   })
 
-  it("starts the app on the configured port", () => {
+  it("starts the app on the configured port", async () => {
     const logSpy = jest.spyOn(console, "log").mockImplementation(() => undefined)
 
-    require("./server")
+    await import("./server")
 
     expect(listen).toHaveBeenCalledWith(4321, expect.any(Function))
     const callback = listen.mock.calls[0][1] as () => void

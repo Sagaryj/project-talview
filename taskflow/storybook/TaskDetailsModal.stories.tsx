@@ -13,7 +13,7 @@ const meta = {
 
 export default meta
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj
 
 function TaskDetailsHarness() {
   const [task, setTask] = useState(sampleTasks[1])

@@ -12,7 +12,7 @@ const meta = {
 
 export default meta
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj
 
 function SidebarHarness({ collapsed = false, mobileOpen = true }: { collapsed?: boolean; mobileOpen?: boolean }) {
   const [isCollapsed, setCollapsed] = useState(collapsed)

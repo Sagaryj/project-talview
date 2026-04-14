@@ -10,18 +10,18 @@ describe("config", () => {
     }
   })
 
-  it("uses API_PORT when provided", () => {
+  it("uses API_PORT when provided", async () => {
     process.env.API_PORT = "5050"
 
-    const { config } = require("./index") as typeof import("./index")
+    const { config } = await import("./index")
 
     expect(config.port).toBe(5050)
   })
 
-  it("falls back to 4000", () => {
+  it("falls back to 4000", async () => {
     delete process.env.API_PORT
 
-    const { config } = require("./index") as typeof import("./index")
+    const { config } = await import("./index")
 
     expect(config.port).toBe(4000)
   })

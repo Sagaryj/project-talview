@@ -25,7 +25,7 @@ describe("email helpers", () => {
 
   it("throws when SES_FROM_EMAIL is missing", async () => {
     delete process.env.SES_FROM_EMAIL
-    const { sendVerificationCodeEmail } = require("./email") as typeof import("./email")
+    const { sendVerificationCodeEmail } = await import("./email")
 
     await expect(sendVerificationCodeEmail({ email: "a@example.com", name: "A", otp: "123456" })).rejects.toThrow(
       "SES_FROM_EMAIL is not configured"
@@ -34,7 +34,7 @@ describe("email helpers", () => {
 
   it("sends a welcome email through SES", async () => {
     process.env.SES_FROM_EMAIL = "sender@example.com"
-    const { sendWelcomeEmail } = require("./email") as typeof import("./email")
+    const { sendWelcomeEmail } = await import("./email")
 
     await sendWelcomeEmail({ email: "person@example.com", name: "Person" })
 

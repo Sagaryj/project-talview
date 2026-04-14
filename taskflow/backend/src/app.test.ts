@@ -1,7 +1,7 @@
 import request from "supertest"
 
 jest.mock("./modules/auth/auth.routes", () => {
-  const express = require("express")
+  const express = jest.requireActual("express") as typeof import("express")
   return {
     authApiRouter: express.Router(),
     authActionRouter: express.Router()
@@ -9,14 +9,14 @@ jest.mock("./modules/auth/auth.routes", () => {
 })
 
 jest.mock("./modules/taskAction/taskAction.routes", () => {
-  const express = require("express")
+  const express = jest.requireActual("express") as typeof import("express")
   return {
     taskActionRouter: express.Router()
   }
 })
 
 jest.mock("./modules/user/user.routes", () => {
-  const express = require("express")
+  const express = jest.requireActual("express") as typeof import("express")
   return {
     userRouter: express.Router()
   }

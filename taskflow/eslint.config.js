@@ -8,7 +8,12 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default defineConfig([globalIgnores(['dist']), {
+export default defineConfig([globalIgnores([
+  'dist',
+  'coverage/**',
+  'backend/coverage/**',
+  'cypress/mochawesome-report/**'
+]), {
   files: ['**/*.{ts,tsx}'],
   extends: [
     js.configs.recommended,
@@ -20,4 +25,9 @@ export default defineConfig([globalIgnores(['dist']), {
     ecmaVersion: 2020,
     globals: globals.browser,
   },
+}, {
+  files: ['cypress/support/commands/**/*.ts'],
+  rules: {
+    '@typescript-eslint/no-namespace': 'off'
+  }
 }, ...storybook.configs["flat/recommended"]])
