@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 
 const TOKEN_SECRET = process.env.AUTH_TOKEN_SECRET || "taskflow-dev-jwt-secret-fallback-2026"
 const HASURA_CLAIMS_NAMESPACE = "https://hasura.io/jwt/claims"
+const TOKEN_TTL_SECONDS = 60 * 60
 
 type HasuraClaims = {
   "x-hasura-default-role": "user"
@@ -64,7 +65,7 @@ export function createAuthToken(userId: number, email: string) {
       userId,
       email,
       iat: now,
-      exp: now + 60 * 60 * 24 * 7,
+      exp: now + TOKEN_TTL_SECONDS,
       [HASURA_CLAIMS_NAMESPACE]: {
         "x-hasura-default-role": "user",
         "x-hasura-allowed-roles": ["user"],

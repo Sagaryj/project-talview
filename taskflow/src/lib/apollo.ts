@@ -20,9 +20,15 @@ function getStoredAuthToken() {
     const saved = localStorage.getItem(AUTH_STORAGE_KEY)
     if (!saved) return null
 
-    const session = JSON.parse(saved) as { token?: string } | null
+    const session = JSON.parse(saved) as { token?: string; expiresAt?: number } | null
+    if (typeof session?.expiresAt === "number" && session.expiresAt <= Date.now()) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
+      return null
+    }
+
     return typeof session?.token === "string" ? session.token : null
   } catch {
+    localStorage.removeItem(AUTH_STORAGE_KEY)
     return null
   }
 }

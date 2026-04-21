@@ -9,6 +9,7 @@ import {
 import { CURRENT_USER_QUERY } from "../features/auth/graphql/queries"
 
 const AUTH_STORAGE_KEY = "taskflow-auth"
+const SESSION_TIMEOUT_MS = 60 * 60 * 1000
 export const AUTH_SESSION_EVENT = "taskflow-auth-changed"
 
 export interface AuthUser {
@@ -27,6 +28,7 @@ export interface AuthUser {
 export interface AuthSession {
   token: string
   user: AuthUser
+  expiresAt?: number
 }
 
 interface AuthMutationResponse {
@@ -117,6 +119,7 @@ function isValidAuthSession(value: unknown): value is AuthSession {
 
   return (
     typeof session.token === "string" &&
+    (session.expiresAt === undefined || typeof session.expiresAt === "number") &&
     !!user &&
     typeof user.id === "number" &&
     typeof user.name === "string" &&
@@ -125,7 +128,10 @@ function isValidAuthSession(value: unknown): value is AuthSession {
 }
 
 export function saveAuthSession(session: AuthSession) {
-  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session))
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+    ...session,
+    expiresAt: session.expiresAt ?? Date.now() + SESSION_TIMEOUT_MS
+  }))
   dispatchAuthSessionChanged()
 }
 
@@ -137,6 +143,11 @@ export function getAuthSession() {
     const parsed = JSON.parse(saved) as unknown
 
     if (!isValidAuthSession(parsed)) {
+      localStorage.removeItem(AUTH_STORAGE_KEY)
+      return null
+    }
+
+    if (parsed.expiresAt !== undefined && parsed.expiresAt <= Date.now()) {
       localStorage.removeItem(AUTH_STORAGE_KEY)
       return null
     }

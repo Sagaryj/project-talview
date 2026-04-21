@@ -1,6 +1,14 @@
 import { createAuthToken, hashPassword, verifyAuthToken, verifyPassword } from './auth'
 
 describe('auth utilities', () => {
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(1_000_000)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('hashes and verifies a password', async () => {
     const password = 'secret123'
     const hash = hashPassword(password)
@@ -17,6 +25,8 @@ describe('auth utilities', () => {
     expect(payload).not.toBeNull()
     expect(payload?.userId).toBe(42)
     expect(payload?.email).toBe('user@example.com')
+    expect(payload?.iat).toBe(1000)
+    expect(payload?.exp).toBe(4600)
     expect(payload?.['https://hasura.io/jwt/claims']).toEqual({
       'x-hasura-default-role': 'user',
       'x-hasura-allowed-roles': ['user'],

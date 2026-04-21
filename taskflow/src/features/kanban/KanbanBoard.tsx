@@ -7,6 +7,7 @@ import KanbanColumn from "./KanbanColumn"
 import TaskModal from "./TaskModal"
 import type { Task, TaskStatus } from "./types"
 import TaskDetailsModal from "./TaskDetailsModal"
+import { useToast } from "../../components/toast-context"
 
 
 export default function KanbanBoard() {
@@ -15,7 +16,9 @@ export default function KanbanBoard() {
     draggingId, setDraggingId,updateTask,updatePriority, updateDueDate,updateTags } 
     = useKanban()
   const { statuses } = useWorkflow()
+  const { showToast } = useToast()
   const[selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [taskPendingDelete, setTaskPendingDelete] = useState<Task | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] =
     useState<TaskStatus>(getDefaultStatusId(statuses))
@@ -49,6 +52,24 @@ export default function KanbanBoard() {
   })
 
   const defaultStatusId = getDefaultStatusId(statuses)
+
+  function requestDeleteTask(taskId: string) {
+    const task = tasks.find((currentTask) => currentTask.id === taskId)
+    if (!task) return
+
+    setTaskPendingDelete(task)
+  }
+
+  async function confirmDeleteTask() {
+    if (!taskPendingDelete) return
+
+    await deleteTask(taskPendingDelete.id)
+    setSelectedTask((currentTask) =>
+      currentTask?.id === taskPendingDelete.id ? null : currentTask
+    )
+    showToast(`Deleted "${taskPendingDelete.title}"`, "success")
+    setTaskPendingDelete(null)
+  }
 
   return (
   <div className="h-full flex flex-col">
@@ -105,7 +126,7 @@ export default function KanbanBoard() {
             setSelectedStatus(nextStatus)
             setModalOpen(true)
           }}
-          onDeleteTask={deleteTask}
+          onDeleteTask={requestDeleteTask}
           reorderTask={reorderTask}
           draggingId={draggingId}
           setDraggingId={setDraggingId}
@@ -135,6 +156,44 @@ export default function KanbanBoard() {
         onClose={() => setModalOpen(false)}
         onCreate={addTask}
       />
+    )}
+
+    {taskPendingDelete && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-task-title"
+          className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900"
+        >
+          <h2 id="delete-task-title" className="text-lg font-semibold text-neutral-900 dark:text-white">
+            Delete task?
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-neutral-600 dark:text-neutral-300">
+            This will permanently delete "{taskPendingDelete.title}" from your board.
+          </p>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              onClick={() => {
+                showToast(`Deletion cancelled for "${taskPendingDelete.title}"`, "warning")
+                setTaskPendingDelete(null)
+              }}
+              className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={() => void confirmDeleteTask()}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
     )}
   </div>
 )

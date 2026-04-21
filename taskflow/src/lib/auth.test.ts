@@ -41,6 +41,11 @@ describe("auth helpers", () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
+    jest.spyOn(Date, "now").mockReturnValue(1_000)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it("saves and reads a valid auth session", () => {
@@ -49,7 +54,10 @@ describe("auth helpers", () => {
 
     saveAuthSession(session)
 
-    expect(getAuthSession()).toEqual(session)
+    expect(getAuthSession()).toEqual({
+      ...session,
+      expiresAt: 3_601_000
+    })
     expect(listener).toHaveBeenCalled()
 
     window.removeEventListener(AUTH_SESSION_EVENT, listener)
@@ -60,6 +68,16 @@ describe("auth helpers", () => {
     clearAuthSession()
 
     expect(getAuthSession()).toBeNull()
+  })
+
+  it("removes an expired auth session", () => {
+    localStorage.setItem("taskflow-auth", JSON.stringify({
+      ...session,
+      expiresAt: 999
+    }))
+
+    expect(getAuthSession()).toBeNull()
+    expect(localStorage.getItem("taskflow-auth")).toBeNull()
   })
 
   it("throws when a session is required but missing", () => {

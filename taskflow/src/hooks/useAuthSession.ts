@@ -18,5 +18,16 @@ export function useAuthSession() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!session?.expiresAt) return
+
+    const delay = Math.max(session.expiresAt - Date.now(), 0)
+    const timeout = window.setTimeout(() => {
+      setSession(getAuthSession())
+    }, delay)
+
+    return () => window.clearTimeout(timeout)
+  }, [session?.expiresAt])
+
   return session
 }

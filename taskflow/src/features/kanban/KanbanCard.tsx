@@ -1,7 +1,6 @@
 import { motion } from "framer-motion"
 import type { Task, Priority } from "./types"
 import { useState } from "react"
-import { useToast } from "../../components/toast-context"
 
 interface Props {
   task: Task
@@ -18,7 +17,6 @@ export default function KanbanCard({
   updateTask,
   setSelectedTask
 }: Props) {
-  const { showToast } = useToast()
   const isOverdue =
     task.dueDate &&
     new Date(task.dueDate) < new Date(new Date().toDateString())
@@ -124,15 +122,10 @@ export default function KanbanCard({
 
           {/* Delete Button */}
           <button
+            aria-label={`Delete ${task.title}`}
             onClick={(e) => {
               e.stopPropagation()
-              if (!window.confirm(`Delete "${task.title}"?`)) {
-                showToast(`Deletion cancelled for "${task.title}"`, "warning")
-                return
-              }
-
               onDelete(task.id)
-              showToast(`Deleted "${task.title}"`, "success")
             }}
             className="text-xs text-neutral-400 hover:text-red-500 transition"
           >

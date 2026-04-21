@@ -14,8 +14,9 @@ actions:
 # 3.rendunty checks 
 # 4.hasura migrate create 
 # 5 have separate grapghql folder n then have it in that 
-# 6. move actions to src 
 
+# 7. dont delete email otps in the hasura pg tabke jus let thm be in the table.
+#8.move action files to src (backend)
 # handlers
 # models
 # utils

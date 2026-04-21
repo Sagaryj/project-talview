@@ -106,3 +106,11 @@ export default function Welcome() {
     </div>
   )
 }
+
+
+// dont hard delete from the table, 
+// and after logging in after how many hours is it logging out
+//  automatically (how r u dealing with this?)
+// and one more thing is after the task has being clicked instead 
+// of giving a pop-up open a task side in the side 
+// dont create alert instead do a pop-up when u delete something.

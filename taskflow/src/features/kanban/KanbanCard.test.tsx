@@ -2,12 +2,6 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import KanbanCard from "./KanbanCard"
 
-const showToast = jest.fn()
-
-jest.mock("../../components/toast-context", () => ({
-  useToast: () => ({ showToast })
-}))
-
 jest.mock("framer-motion", () => ({
   motion: {
     div: ({ children, layout, ...props }: React.HTMLAttributes<HTMLDivElement> & { layout?: boolean }) => {
@@ -49,10 +43,9 @@ describe("KanbanCard", () => {
     expect(setSelectedTask).toHaveBeenCalledWith(task)
   })
 
-  it("confirms delete, deletes, and shows toast", async () => {
+  it("requests delete when delete is clicked", async () => {
     const user = userEvent.setup()
     const onDelete = jest.fn()
-    jest.spyOn(window, "confirm").mockReturnValue(true)
 
     render(
       <KanbanCard
@@ -64,9 +57,8 @@ describe("KanbanCard", () => {
       />
     )
 
-    await user.click(screen.getByRole("button", { name: "✕" }))
+    await user.click(screen.getByRole("button", { name: "Delete Write docs" }))
     expect(onDelete).toHaveBeenCalledWith("1")
-    expect(showToast).toHaveBeenCalledWith('Deleted "Write docs"', "success")
   })
 
   it("starts dragging with the task id", () => {

@@ -4,6 +4,7 @@ import KanbanBoard from "./KanbanBoard"
 
 const useKanban = jest.fn()
 const useWorkflow = jest.fn()
+const showToast = jest.fn()
 
 jest.mock("./useKanban", () => ({
   useKanban: () => useKanban()
@@ -13,10 +14,15 @@ jest.mock("./useWorkflow", () => ({
   useWorkflow: () => useWorkflow()
 }))
 
+jest.mock("../../components/toast-context", () => ({
+  useToast: () => ({ showToast })
+}))
+
 jest.mock("./KanbanColumn", () => (props: {
   title: string
   tasks: Array<{ title: string }>
   onAddTask: (status: string) => void
+  onDeleteTask: (taskId: string) => void
   setSelectedTask: (task: { id: string; title: string; status: string; priority: "low" | "medium" | "high" }) => void
   status: string
 }) => (
@@ -25,18 +31,21 @@ jest.mock("./KanbanColumn", () => (props: {
     <div data-testid={`tasks-${props.status}`}>{props.tasks.map((task) => task.title).join(",") || "none"}</div>
     <button onClick={() => props.onAddTask(props.status)}>Add To {props.title}</button>
     {props.tasks[0] ? (
-      <button
-        onClick={() =>
-          props.setSelectedTask({
-            id: "selected-task",
-            title: props.tasks[0].title,
-            status: props.status,
-            priority: "medium"
-          })
-        }
-      >
-        Open {props.title} Task
-      </button>
+      <>
+        <button
+          onClick={() =>
+            props.setSelectedTask({
+              id: "selected-task",
+              title: props.tasks[0].title,
+              status: props.status,
+              priority: "medium"
+            })
+          }
+        >
+          Open {props.title} Task
+        </button>
+        <button onClick={() => props.onDeleteTask("1")}>Delete {props.title} Task</button>
+      </>
     ) : null}
   </div>
 ))
@@ -122,5 +131,23 @@ describe("KanbanBoard", () => {
 
     await user.click(screen.getByRole("button", { name: "Open Todo Task" }))
     expect(screen.getByText("TaskDetails:Design landing")).toBeInTheDocument()
+  })
+
+  it("shows a delete popup and confirms deletion", async () => {
+    const user = userEvent.setup()
+    const deleteTask = jest.fn()
+    useKanban.mockReturnValue({
+      ...useKanban(),
+      deleteTask
+    })
+
+    render(<KanbanBoard />)
+
+    await user.click(screen.getByRole("button", { name: "Delete Todo Task" }))
+    expect(screen.getByRole("dialog", { name: "Delete task?" })).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Delete" }))
+    expect(deleteTask).toHaveBeenCalledWith("1")
+    expect(showToast).toHaveBeenCalledWith('Deleted "Design landing"', "success")
   })
 })

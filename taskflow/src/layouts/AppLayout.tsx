@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar"
 import Topbar from "./Topbar"
 import CommandPalette from "../components/CommandPalette"
 import { motion, AnimatePresence } from "framer-motion"
-import { getAuthSession } from "../lib/auth"
+import { useAuthSession } from "../hooks/useAuthSession"
 
 export default function AppLayout() {
 
@@ -13,6 +13,7 @@ export default function AppLayout() {
   const [commandOpen, setCommandOpen] = useState(false)
 
   const location = useLocation()
+  const session = useAuthSession()
 
   /* CTRL + K LISTENER */
 
@@ -35,7 +36,7 @@ export default function AppLayout() {
 
   }, [])
 
-  if (!getAuthSession()) {
+  if (!session) {
     return <Navigate to="/login" replace />
   }
 
